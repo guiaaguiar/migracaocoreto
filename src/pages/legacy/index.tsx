@@ -13,13 +13,12 @@ interface LegacyPage {
 }
 
 const LEGACY_PAGES: LegacyPage[] = [
-  // Exemplo (descomente ao adicionar a primeira página):
-  // {
-  //   slug: 'dashboard',
-  //   name: 'Dashboard',
-  //   description: 'Tela principal do CORETO no Bubble.',
-  //   status: 'done',
-  // },
+  {
+    slug: 'inscricao-desafio-v1',
+    name: 'Crie sua Oportunidade (V1)',
+    description: 'Formulário de criação e cadastro de oportunidades em 3 etapas.',
+    status: 'done',
+  },
 ]
 
 const statusLabel: Record<LegacyPage['status'], string> = {

@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LegacyIndexPage from './pages/legacy'
+import InscricaoDesafioV1Page from './pages/legacy/inscricao-desafio-v1'
 
 // As páginas de legado serão importadas aqui à medida que forem convertidas.
-// Exemplo:
-// import LegacyDashboard from './pages/legacy/dashboard'
 
 function App() {
   return (
@@ -14,9 +13,7 @@ function App() {
 
         {/* ── Seção de Legado Bubble ── */}
         <Route path="/legacy" element={<LegacyIndexPage />} />
-
-        {/* Páginas convertidas do Bubble — adicionar aqui conforme forem criadas */}
-        {/* <Route path="/legacy/dashboard" element={<LegacyDashboard />} /> */}
+        <Route path="/legacy/inscricao-desafio-v1" element={<InscricaoDesafioV1Page />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/legacy" replace />} />
