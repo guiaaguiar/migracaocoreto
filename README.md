@@ -97,6 +97,7 @@ A seção de legado é um arquivo histórico da plataforma CORETO na versão Bub
 | Página | Rota | Status |
 |---|---|---|
 | Inscrição Desafio V1 | `/legacy/inscricao-desafio-v1` | ✅ Concluída |
+| Inscrição no Novo Coreto | `/legacy/inscricao-evento` | ✅ Concluída |
 
 > As páginas são adicionadas à medida que o HTML do Bubble e os screenshots são fornecidos.
 

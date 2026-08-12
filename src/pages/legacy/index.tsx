@@ -14,9 +14,111 @@ interface LegacyPage {
 
 const LEGACY_PAGES: LegacyPage[] = [
   {
+    slug: '404',
+    name: 'Página de Erro 404',
+    description: 'Página de erro 404 padrão quando um link não existe, com mensagem amigável, imagem ilustrativa e links de navegação.',
+    status: 'done',
+  },
+  {
     slug: 'inscricao-desafio-v1',
     name: 'Crie sua Oportunidade (V1)',
     description: 'Formulário de criação e cadastro de oportunidades em 3 etapas.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-evento',
+    name: 'Inscrição no Novo Coreto',
+    description: 'Página de pré-inscrição de evento com banner hero, cadastro completo e modal de organizador.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-organizacao',
+    name: 'Cadastrar Organização',
+    description: 'Formulário completo para cadastro de empresas/organizações com upload de logo/banner, redes sociais, permissões e assuntos relacionados.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-resolvedor',
+    name: 'Cadastro de Resolvedores',
+    description: 'Formulário de cadastro de resolvedores (startups, projetos de inovação, laboratórios) em 2 etapas com TRL, áreas de atuação e tipos de parceria.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-startup',
+    name: 'Inscrição Startup (Iniciativa)',
+    description: 'Formulário de cadastro e inscrição de startups em 3 etapas (Iniciativa, Conexões e Time) com upload de logo/banner, pitch, TRL e áreas temáticas.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-talento',
+    name: 'Perfil de Talento',
+    description: 'Formulário de perfil e cadastro de talentos com dados pessoais, escolaridade, atuação profissional, palavras-chave e preferências.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-v2_1',
+    name: 'Perfil de Talento (V2.1)',
+    description: 'Formulário completo de perfil de talento V2.1 com foto de perfil, dados pessoais, profissionais, assuntos de conexão e notificações.',
+    status: 'done',
+  },
+  {
+    slug: 'mapa-ecossistema',
+    name: 'Mapa do Ecossistema',
+    description: 'Mapa interativo do ecossistema de inovação da cidade com visualização de atores, conexões, categorias, indicadores e importação.',
+    status: 'done',
+  },
+  {
+    slug: 'matchariano',
+    name: 'Matching com Coreto (Totem 1080x1920)',
+    description: 'Totem interativo de matching para o REC\'n\'PLAY 2025 com resolução 1080x1920, quiz de 3 etapas e recomendação de oportunidades e conexões.',
+    status: 'done',
+  },
+  {
+    slug: 'meu_eco-organizacoes',
+    name: 'Ecossistema - Organizações',
+    description: 'Diretório de organizações parceiras de Recife com busca em tempo real, filtro por categorias, visualização de tags e modal de detalhes.',
+    status: 'done',
+  },
+  {
+    slug: 'netpitch',
+    name: 'NETpitch (IA Pitch Builder)',
+    description: 'Plataforma de desenvolvimento de ideias de inovação e geração de pitches executivos com IA, perguntas dinâmicas e exportação.',
+    status: 'done',
+  },
+  {
+    slug: 'netpitchv2',
+    name: 'NETpitch V2 (Gerador de Pitches com Layla)',
+    description: 'Nova página do NETPitch com escolha entre Versão Estendida (20 slides, assistente Layla) e Versão Reduzida (5 perguntas), validação de respostas e download.',
+    status: 'done',
+  },
+  {
+    slug: 'nitro',
+    name: 'NITRO 2026',
+    description: 'Trilha de inovação e transferência tecnológica com editais, abas de navegação, avisos de prazo encerrado (001 e 003) e pop-up de inscrição de software (002) para Startup PJ e Inventor PF.',
+    status: 'done',
+  },
+  {
+    slug: 'nitro-inscricoes',
+    name: 'Dashboard Inscrições NITRO 2026',
+    description: 'Painel administrativo com submissões dos Editais 001, 002 e 003, modais de detalhes completos para cada edital e exportação CSV.',
+    status: 'done',
+  },
+  {
+    slug: 'oportunidades',
+    name: 'Oportunidades & Desafios',
+    description: 'Vitrine de oportunidades do ecossistema com busca em tempo real, desafios abertos, tags de áreas temáticas e apoio oferecido, e modal de detalhes.',
+    status: 'done',
+  },
+  {
+    slug: 'parcerias-inovadoras',
+    name: 'Escritório de Parcerias Inovadoras',
+    description: 'Inscrição para o Escritório de Parcerias Inovadoras com fluxo de introdução e formulário de dados gerais do projeto.',
+    status: 'done',
+  },
+  {
+    slug: 'premio-inovacao-rec',
+    name: 'Prêmio Recife de Inovação 2025',
+    description: 'Página oficial do Prêmio Recife de Inovação com abas de Início, Categorias expansíveis, Cronograma detalhado, Banca Avaliadora, Resultados com links e Área do Avaliador.',
     status: 'done',
   },
 ]
