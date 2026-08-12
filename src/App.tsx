@@ -19,6 +19,8 @@ import OportunidadesPage from './pages/legacy/oportunidades'
 import ParceriasInovadorasPage from './pages/legacy/parcerias-inovadoras'
 import PremioInovacaoRecPage from './pages/legacy/premio-inovacao-rec'
 import QuizzDescubraSeuLugarPage from './pages/legacy/quizz-descubra_seu_lugar'
+import StartupsEMeuEcossistemaPage from './pages/legacy/startups_e_meu_ecossistema'
+import TrilhaEitaPage from './pages/legacy/trilha-eita'
 
 // As páginas de legado serão importadas aqui à medida que forem convertidas.
 
@@ -54,6 +56,10 @@ function App() {
         <Route path="/legacy/premio-inovacao-rec" element={<PremioInovacaoRecPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar/:slug" element={<QuizzDescubraSeuLugarPage />} />
+        <Route path="/legacy/startups_e_meu_ecossistema" element={<StartupsEMeuEcossistemaPage />} />
+        <Route path="/legacy/startups-e-meu-ecossistema" element={<StartupsEMeuEcossistemaPage />} />
+        <Route path="/legacy/trilha-eita" element={<TrilhaEitaPage />} />
+        <Route path="/trilha-eita" element={<TrilhaEitaPage />} />
 
         {/* Fallback — Qualquer link inexistente redireciona para /404 */}
         <Route path="*" element={<Navigate to="/404" replace />} />

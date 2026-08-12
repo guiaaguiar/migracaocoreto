@@ -121,6 +121,24 @@ const LEGACY_PAGES: LegacyPage[] = [
     description: 'Página oficial do Prêmio Recife de Inovação com abas de Início, Categorias expansíveis, Cronograma detalhado, Banca Avaliadora, Resultados com links e Área do Avaliador.',
     status: 'done',
   },
+  {
+    slug: 'quizz-descubra_seu_lugar',
+    name: 'Quiz: Descubra o Seu Lugar na Inovação',
+    description: 'Quiz interativo de 5 perguntas para descobrir seu papel e perfil no ecossistema de inovação (REC\'n\'PLAY / CORETO) com tela de resultado e badge de perfil.',
+    status: 'done',
+  },
+  {
+    slug: 'startups_e_meu_ecossistema',
+    name: 'Startups & Meu Ecossistema',
+    description: 'Vitrine de startups do ecossistema do Recife com busca em tempo real, filtro por categorias, cards interativos e modal de detalhes com informações e contatos.',
+    status: 'done',
+  },
+  {
+    slug: 'trilha-eita',
+    name: 'Trilha e.i.t.a! Recife (3º Ciclo Inovação Aberta)',
+    description: 'Página da Trilha e.i.t.a! Recife com banner oficial, abas, botão de adicionar coluna, e formulário de inscrição em 7 seçõesSan e sub-seções sanfonadas com editor rico e upload.',
+    status: 'done',
+  },
 ]
 
 const statusLabel: Record<LegacyPage['status'], string> = {
