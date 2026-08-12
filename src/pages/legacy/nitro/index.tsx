@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-
-import logoCoreto from '../../../assets/logo-coreto.png'
-import logoAbdi from '../../../assets/logo-abdi.png'
-import logoEmprel from '../../../assets/logo-emprel.png'
+import Header from '../../../components/Header'
+import Sidebar from '../../../components/Sidebar'
 import bannerNitro from '../../../assets/banner-nitro.png'
 
 type TabType = 'inicio' | 'inscricao' | 'editais' | 'cronograma'
@@ -132,169 +129,11 @@ export default function NitroPage() {
         </div>
       )}
 
-      {/* ── Top Header Navigation Bar ── */}
-      <header
-        style={{
-          backgroundColor: '#ffffff',
-          height: '64px',
-          padding: '0 32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid #E2E8F0',
-          position: 'sticky',
-          top: 0,
-          zIndex: 30,
-        }}
-      >
-        {/* Left Logos */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/legacy" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '32px', objectFit: 'contain' }} />
-          </Link>
-          <img src={logoAbdi} alt="ABDI" style={{ height: '28px', objectFit: 'contain' }} />
-          <img src={logoEmprel} alt="Emprel" style={{ height: '24px', objectFit: 'contain' }} />
-        </div>
-
-        {/* Right User & Voltar link */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link
-            to="/legacy"
-            style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#00a8b5',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span>← Voltar ao Legado</span>
-          </Link>
-
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              cursor: 'pointer',
-              padding: '6px 12px',
-              borderRadius: '20px',
-              border: '1px solid #E2E8F0',
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: '#F1F5F9',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '1px solid #CBD5E1',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E293B" strokeWidth="1.5">
-                <circle cx="12" cy="5" r="2.5" />
-                <circle cx="4.5" cy="19" r="2.5" />
-                <circle cx="19.5" cy="19" r="2.5" />
-                <path d="M12 7.5v3.5M12 11L6 17M12 11l6 6" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 600, color: '#0F172A' }}>Pedro</span>
-            <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20" style={{ color: '#0F172A' }}>
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Main Layout Body ── */}
       <div style={{ display: 'flex', flex: 1, minHeight: 'calc(100vh - 64px)' }}>
-        
-        {/* ── Left Sidebar ── */}
-        <aside
-          style={{
-            width: '200px',
-            backgroundColor: '#ffffff',
-            borderRight: '1px solid #E2E8F0',
-            paddingTop: '20px',
-            paddingBottom: '48px',
-            flexShrink: 0,
-          }}
-        >
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {/* Início */}
-            <Link
-              to="/legacy"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '10px 20px',
-                fontWeight: 500,
-                fontSize: '14px',
-                color: '#00a8b5',
-                textDecoration: 'none',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a8b5" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M9 9h6v6H9z" />
-              </svg>
-              <span>Início</span>
-            </Link>
-
-            {/* Meus programas */}
-            <a
-              href="#"
-              onClick={e => e.preventDefault()}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '10px 20px',
-                fontWeight: 500,
-                fontSize: '14px',
-                color: '#00a8b5',
-                textDecoration: 'none',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e05c5c" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>Meus programas</span>
-            </a>
-
-            {/* Section: Resolvedor */}
-            <div style={{ padding: '20px 20px 8px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 800, color: '#1E293B', letterSpacing: '0.02em' }}>
-                Resolvedor
-              </span>
-            </div>
-
-            <SidebarItem icon="opportunity" label="Oportunidades" color="#00a8b5" />
-            <SidebarItem icon="solution" label="Criar solução" color="#d946ef" />
-            <SidebarItem icon="benefits" label="Benefícios" color="#f97316" />
-            <SidebarItem icon="panel" label="Painel" color="#00a8b5" />
-
-            {/* Section: GERAL */}
-            <div style={{ padding: '24px 20px 8px', borderTop: '1px solid #F1F5F9', marginTop: '12px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 800, color: '#1E293B', letterSpacing: '0.02em' }}>
-                GERAL
-              </span>
-            </div>
-
-            <SidebarItem icon="help" label="Ajuda" color="#eab308" />
-            <SidebarItem icon="exit" label="Sair" color="#00a8b5" />
-          </nav>
-        </aside>
+        <Sidebar activeItem="nitro" />
 
         {/* ── Main Content Area ── */}
         <main style={{ flex: 1, padding: '32px 40px', backgroundColor: '#F8FAFC', maxWidth: '1100px' }}>
@@ -1802,71 +1641,7 @@ function FileUploadBox({ label, subtext, fileName, onUpload }: { label: string; 
   )
 }
 
-function SidebarItem({ icon, label, color }: { icon: string; label: string; color: string }) {
-  return (
-    <a
-      href="#"
-      onClick={e => e.preventDefault()}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '10px 20px',
-        fontWeight: 500,
-        fontSize: '14px',
-        color: '#00a8b5',
-        textDecoration: 'none',
-      }}
-    >
-      <div style={{ width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {icon === 'opportunity' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <circle cx="12" cy="5" r="3" />
-            <circle cx="5" cy="18" r="3" />
-            <circle cx="19" cy="18" r="3" />
-            <line x1="12" y1="8" x2="5" y2="15" />
-            <line x1="12" y1="8" x2="19" y2="15" />
-          </svg>
-        )}
-        {icon === 'solution' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71 1.26-1.5 1.5-2.5l-3-3c-1 .24-1.79.79-2.5 1.5z" />
-            <path d="M12 15l-3-3 8.5-8.5c.83-.83 2.17-.83 3 0s.83 2.17 0 3L12 15z" />
-          </svg>
-        )}
-        {icon === 'benefits' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M3.6 9h16.8" />
-            <path d="M3.6 15h16.8" />
-          </svg>
-        )}
-        {icon === 'panel' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <line x1="3" y1="9" x2="21" y2="9" />
-            <line x1="9" y1="21" x2="9" y2="9" />
-          </svg>
-        )}
-        {icon === 'help' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
-          </svg>
-        )}
-        {icon === 'exit' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        )}
-      </div>
-      <span>{label}</span>
-    </a>
-  )
-}
+
 
 function DocumentButton({ title, url }: { title: string; url: string }) {
   return (

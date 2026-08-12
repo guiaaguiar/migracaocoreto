@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import Header from '../../../components/Header'
 import img404 from '../../../assets/404.png'
 
 export default function NotFoundPage() {
@@ -13,21 +14,11 @@ export default function NotFoundPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#ffffff',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '40px 24px',
-        boxSizing: 'border-box',
-        fontFamily: "'DM Sans', 'Inter', system-ui, -apple-system, sans-serif",
-      }}
-    >
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
+      <Header />
       <div
         style={{
+          flex: 1,
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
@@ -36,6 +27,10 @@ export default function NotFoundPage() {
           gap: '56px',
           maxWidth: '980px',
           width: '100%',
+          margin: '0 auto',
+          padding: '40px 24px',
+          boxSizing: 'border-box',
+          fontFamily: "'DM Sans', 'Inter', system-ui, -apple-system, sans-serif",
         }}
       >
         {/* ── Esquerda: Título 404 e Ilustração ── */}

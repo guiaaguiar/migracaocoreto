@@ -1,9 +1,6 @@
 import { useState } from 'react'
-
-// Assets
-import logoCoreto from '../../../assets/logo-coreto.png'
-import logoAbdi from '../../../assets/logo-abdi.png'
-import logoEmprel from '../../../assets/logo-emprel.png'
+import Header from '../../../components/Header'
+import Sidebar from '../../../components/Sidebar'
 
 interface SubmissionEdital1 {
   id: string
@@ -633,74 +630,11 @@ export default function NitroInscricoesPage() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F8FAFC', fontFamily: "'DM Sans', sans-serif" }}>
-      {/* ── Sidebar Component ── */}
-      <aside style={{ width: '240px', backgroundColor: '#FFFFFF', borderRight: '1px solid #E2E8F0', flexShrink: 0, padding: '24px 0' }}>
-        <div style={{ padding: '0 24px 24px', borderBottom: '1px solid #F1F5F9' }}>
-          <a href="/legacy" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '32px' }} />
-          </a>
-        </div>
-
-        <nav style={{ padding: '16px 12px' }}>
-          <SidebarItem icon="home" label="Início" href="/legacy" />
-          <SidebarItem icon="sync" label="Meus programas" href="#" />
-
-          <div style={{ marginTop: '24px', marginBottom: '8px', paddingLeft: '12px', fontSize: '12px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Resolvedor
-          </div>
-          <SidebarItem icon="branches" label="Oportunidades" href="/legacy/oportunidades" />
-          <SidebarItem icon="rocket" label="Criar solução" href="#" />
-          <SidebarItem icon="planet" label="Benefícios" href="#" />
-          <SidebarItem icon="panel" label="Painel" href="/legacy/nitro-inscricoes" active />
-
-          <div style={{ marginTop: '24px', marginBottom: '8px', paddingLeft: '12px', fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            GERAL
-          </div>
-          <SidebarItem icon="help" label="Ajuda" href="#" />
-          <SidebarItem icon="exit" label="Sair" href="#" />
-        </nav>
-      </aside>
-
-      {/* ── Main Content Area ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Header Bar */}
-        <header
-          style={{
-            height: '70px',
-            backgroundColor: '#FFFFFF',
-            borderBottom: '1px solid #E2E8F0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 32px',
-          }}
-        >
-          {/* Left logos */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '28px' }} />
-            <div style={{ height: '20px', width: '1px', backgroundColor: '#CBD5E1' }} />
-            <img src={logoAbdi} alt="ABDI" style={{ height: '24px' }} />
-            <img src={logoEmprel} alt="Emprel" style={{ height: '24px' }} />
-          </div>
-
-          {/* User profile dropdown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a8b5" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 600, color: '#0F172A' }}>Pedro</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
-        </header>
-
-        {/* Content Container */}
-        <main style={{ padding: '32px', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#F8FAFC', fontFamily: "'DM Sans', sans-serif" }}>
+      <Header />
+      <div style={{ display: 'flex', flex: 1 }}>
+        <Sidebar activeItem="painel" />
+        <main style={{ flex: 1, padding: '32px', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
 
           {/* ── Top Hero Card (Dashboard Inscrições Nitro 2026) ── */}
           <div
@@ -1722,97 +1656,5 @@ function FormRadioPair({ label, checked }: { label?: string; checked: boolean })
         </label>
       </div>
     </div>
-  )
-}
-
-function SidebarItem({
-  icon,
-  label,
-  href,
-  active,
-}: {
-  icon: string
-  label: string
-  href: string
-  active?: boolean
-}) {
-  const color = active ? '#00a8b5' : '#64748B'
-  return (
-    <a
-      href={href}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '10px 12px',
-        borderRadius: '8px',
-        color: active ? '#00a8b5' : '#334155',
-        backgroundColor: active ? '#F0FDFA' : 'transparent',
-        fontSize: '14px',
-        fontWeight: active ? 700 : 500,
-        textDecoration: 'none',
-        marginBottom: '2px',
-      }}
-    >
-      <div style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
-        {icon === 'home' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
-        )}
-        {icon === 'sync' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <polyline points="23 4 23 10 17 10" />
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-          </svg>
-        )}
-        {icon === 'branches' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <line x1="6" y1="3" x2="6" y2="15" />
-            <circle cx="18" cy="6" r="3" />
-            <circle cx="6" cy="18" r="3" />
-            <path d="M18 9a9 9 0 0 1-9 9" />
-          </svg>
-        )}
-        {icon === 'rocket' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71 1.26-1.5 1.5-2.5l-4.5-4.5c-1 .24-1.79.79-2.5 1.5z" />
-            <path d="M12 15l-3-3 7.5-7.5c1.38-1.38 3.62-1.38 5 0s1.38 3.62 0 5L14 17l-2-2z" />
-          </svg>
-        )}
-        {icon === 'planet' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M3.6 9h16.8" />
-            <path d="M3.6 15h16.8" />
-          </svg>
-        )}
-        {icon === 'panel' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <line x1="3" y1="9" x2="21" y2="9" />
-            <line x1="9" y1="21" x2="9" y2="9" />
-          </svg>
-        )}
-        {icon === 'help' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
-          </svg>
-        )}
-        {icon === 'exit' && (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        )}
-      </div>
-      <span>{label}</span>
-    </a>
   )
 }

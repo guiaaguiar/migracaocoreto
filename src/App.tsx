@@ -1,6 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LegacyIndexPage from './pages/legacy'
 import NotFoundPage from './pages/legacy/404'
+import AvaliadorPremioRecPage from './pages/legacy/avaliador-premiorec'
+import AvaliadorTrilhaPage from './pages/legacy/avaliador-trilha'
+import BoPage from './pages/legacy/bo'
+import CaminhosFase2Page from './pages/legacy/caminhos-fase2'
+import CompleteInscricaoPage from './pages/legacy/complete-inscricao'
+import EitaPage from './pages/legacy/eita'
+import HackerCidadaoPage from './pages/legacy/hackercidadao'
+import HomePage from './pages/legacy/home'
+import HomeArianoPage from './pages/legacy/home-arianov0'
+import InscricaoConexoesPage from './pages/legacy/inscricao-conexoes'
+import InscricaoDesafioPage from './pages/legacy/inscricao-desafio'
 import InscricaoDesafioV1Page from './pages/legacy/inscricao-desafio-v1'
 import InscricaoEventoPage from './pages/legacy/inscricao-evento'
 import InscricaoOrganizacaoPage from './pages/legacy/inscricao-organizacao'
@@ -19,10 +30,9 @@ import OportunidadesPage from './pages/legacy/oportunidades'
 import ParceriasInovadorasPage from './pages/legacy/parcerias-inovadoras'
 import PremioInovacaoRecPage from './pages/legacy/premio-inovacao-rec'
 import QuizzDescubraSeuLugarPage from './pages/legacy/quizz-descubra_seu_lugar'
+import StartupWorldCupPage from './pages/legacy/startupworldcup'
 import StartupsEMeuEcossistemaPage from './pages/legacy/startups_e_meu_ecossistema'
 import TrilhaEitaPage from './pages/legacy/trilha-eita'
-
-// As páginas de legado serão importadas aqui à medida que forem convertidas.
 
 function App() {
   return (
@@ -37,6 +47,17 @@ function App() {
 
         {/* ── Seção de Legado Bubble ── */}
         <Route path="/legacy" element={<LegacyIndexPage />} />
+        <Route path="/legacy/home" element={<HomePage />} />
+        <Route path="/legacy/home-arianov0" element={<HomeArianoPage />} />
+        <Route path="/legacy/avaliador-premiorec" element={<AvaliadorPremioRecPage />} />
+        <Route path="/legacy/avaliador-trilha" element={<AvaliadorTrilhaPage />} />
+        <Route path="/legacy/bo" element={<BoPage />} />
+        <Route path="/legacy/caminhos-fase2" element={<CaminhosFase2Page />} />
+        <Route path="/legacy/complete-inscricao" element={<CompleteInscricaoPage />} />
+        <Route path="/legacy/eita" element={<EitaPage />} />
+        <Route path="/legacy/hackercidadao" element={<HackerCidadaoPage />} />
+        <Route path="/legacy/inscricao-conexoes" element={<InscricaoConexoesPage />} />
+        <Route path="/legacy/inscricao-desafio" element={<InscricaoDesafioPage />} />
         <Route path="/legacy/inscricao-desafio-v1" element={<InscricaoDesafioV1Page />} />
         <Route path="/legacy/inscricao-evento" element={<InscricaoEventoPage />} />
         <Route path="/legacy/inscricao-organizacao" element={<InscricaoOrganizacaoPage />} />
@@ -56,6 +77,7 @@ function App() {
         <Route path="/legacy/premio-inovacao-rec" element={<PremioInovacaoRecPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar/:slug" element={<QuizzDescubraSeuLugarPage />} />
+        <Route path="/legacy/startupworldcup" element={<StartupWorldCupPage />} />
         <Route path="/legacy/startups_e_meu_ecossistema" element={<StartupsEMeuEcossistemaPage />} />
         <Route path="/legacy/startups-e-meu-ecossistema" element={<StartupsEMeuEcossistemaPage />} />
         <Route path="/legacy/trilha-eita" element={<TrilhaEitaPage />} />
@@ -69,3 +91,4 @@ function App() {
 }
 
 export default App
+

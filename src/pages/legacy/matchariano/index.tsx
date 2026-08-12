@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
-import logoCoreto from '../../../assets/logo-coreto.png'
-import logoAbdi from '../../../assets/logo-abdi.png'
-import logoEmprel from '../../../assets/logo-emprel.png'
+import Header from '../../../components/Header'
 import logoPrefeitura from '../../../assets/logo-prefeitura.png'
 import logoRecnplay from '../../../assets/logo-recnplay.png'
 
@@ -143,89 +139,7 @@ export default function MatcharianoPage() {
         color: '#FFFFFF',
       }}
     >
-      {/* ── 1. Barra de Navegação Global (Legado Coreto) ── */}
-      <header
-        style={{
-          backgroundColor: '#FFFFFF',
-          height: '60px',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid #E2E8F0',
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-        }}
-      >
-        {/* Logos Esquerda */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Link to="/legacy" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '28px', objectFit: 'contain' }} />
-          </Link>
-          <div style={{ width: '1px', height: '24px', backgroundColor: '#CBD5E1' }} />
-          <img src={logoAbdi} alt="ABDI" style={{ height: '24px', objectFit: 'contain' }} />
-          <img src={logoEmprel} alt="Emprel" style={{ height: '20px', objectFit: 'contain' }} />
-        </div>
-
-        {/* Controles de Modo & Perfil Direita */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button
-            onClick={() => setIsTotemMode(!isTotemMode)}
-            style={{
-              backgroundColor: isTotemMode ? '#00D2D3' : '#F1F5F9',
-              color: isTotemMode ? '#04153B' : '#475569',
-              border: `1px solid ${isTotemMode ? '#00B4D8' : '#CBD5E1'}`,
-              borderRadius: '20px',
-              padding: '6px 14px',
-              fontSize: '12px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            <span>{isTotemMode ? '📱 Modo Totem (1080x1920)' : '🖥️ Modo Tela Cheia'}</span>
-          </button>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1E293B', fontSize: '13px', fontWeight: 600 }}>
-            <div
-              style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: '50%',
-                backgroundColor: '#E2E8F0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00A8B5" strokeWidth="2">
-                <circle cx="12" cy="7" r="4" />
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              </svg>
-            </div>
-            <span>Pedro</span>
-            <span style={{ fontSize: '10px', color: '#64748B' }}>▼</span>
-          </div>
-
-          <Link
-            to="/legacy"
-            style={{
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#00A8B5',
-              textDecoration: 'none',
-            }}
-          >
-            ← Legado
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* ── 2. Container Principal (Modo Totem 1080x1920 ou Responsivo) ── */}
       <main

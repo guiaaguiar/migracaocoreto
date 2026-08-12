@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
-import logoCoreto from '../../../assets/logo-coreto.png'
-import logoAbdi from '../../../assets/logo-abdi.png'
-import logoEmprel from '../../../assets/logo-emprel.png'
+import Header from '../../../components/Header'
+import Sidebar from '../../../components/Sidebar'
 import bannerNetpitch from '../../../assets/banner-netpitch.png'
 
 // Pool de perguntas genéricas de inovação que rotacionam no carregamento da página
@@ -90,9 +87,6 @@ function getRandomItem(pool: string[]) {
 }
 
 export default function NetpitchPage() {
-  // Navigation active state
-  const [activeMenu, setActiveMenu] = useState('Criar solução')
-
   // Workflow steps: 1 = Inicial, 2 = Perguntas IA, 3 = Pitch Gerado
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [isProcessingIa, setIsProcessingIa] = useState(false)
@@ -196,209 +190,11 @@ export default function NetpitchPage() {
         </div>
       )}
 
-      {/* ── Top Header Bar ── */}
-      <header
-        style={{
-          backgroundColor: '#FFFFFF',
-          height: '64px',
-          padding: '0 32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid #E2E8F0',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        {/* Left: Logos */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/legacy" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '32px', objectFit: 'contain' }} />
-          </Link>
-          <div style={{ width: '1px', height: '24px', backgroundColor: '#CBD5E1' }} />
-          <img src={logoAbdi} alt="ABDI" style={{ height: '26px', objectFit: 'contain' }} />
-          <img src={logoEmprel} alt="Emprel" style={{ height: '22px', objectFit: 'contain' }} />
-        </div>
-
-        {/* Right: User Profile */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-          <div
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#F1F5F9',
-              border: '1px solid #CBD5E1',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#334155',
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-          <span style={{ fontSize: '14px', fontWeight: 600, color: '#334155' }}>Pedro</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Main Layout Body: Sidebar + Content ── */}
       <div style={{ display: 'flex', flex: 1 }}>
-        {/* Left Sidebar */}
-        <aside
-          style={{
-            width: '240px',
-            backgroundColor: '#FFFFFF',
-            borderRight: '1px solid #E2E8F0',
-            padding: '24px 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '24px',
-            flexShrink: 0,
-          }}
-        >
-          {/* Top Menu Links */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <SidebarItem
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="14" y="14" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                </svg>
-              }
-              label="Início"
-              active={activeMenu === 'Início'}
-              onClick={() => setActiveMenu('Início')}
-            />
-            <SidebarItem
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="23 4 23 10 17 10" />
-                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-                </svg>
-              }
-              label="Meus programas"
-              active={activeMenu === 'Meus programas'}
-              onClick={() => setActiveMenu('Meus programas')}
-            />
-          </div>
-
-          {/* RESOLVEDOR Section */}
-          <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: '#1E293B',
-                letterSpacing: '0.05em',
-                marginBottom: '8px',
-                paddingLeft: '12px',
-                textTransform: 'uppercase',
-              }}
-            >
-              RESOLVEDOR
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M19.4 15a16.5 16.5 0 0 0 .33-1.82l-2.05-.72a8.88 8.88 0 0 0-.44-1.07l1.17-1.84a16.56 16.56 0 0 0-1.28-1.29l-1.84 1.17c-.34-.17-.7-.32-1.07-.44l-.72-2.05A16.56 16.56 0 0 0 12 4.6v2.18c-.38.03-.76.1-1.12.21L9.67 4.95a16.63 16.63 0 0 0-1.82.33l-.72 2.05c-.37.12-.73.27-1.07.44L4.22 6.6A16.56 16.56 0 0 0 2.94 7.89l1.17 1.84c-.17.34-.32.7-.44 1.07l-2.05.72A16.5 16.5 0 0 0 1.6 13.34h2.18c.03.38.1.76.21 1.12l-2.04 1.21a16.63 16.63 0 0 0 .33 1.82l2.05.72c.12.37.27.73.44 1.07l-1.17 1.84a16.56 16.56 0 0 0 1.28 1.29l1.84-1.17c.34.17.7.32 1.07.44l.72 2.05c.6.12 1.2.23 1.82.33v-2.18c.38-.03.76-.1 1.12-.21l1.21 2.04c.61-.09 1.22-.2 1.82-.33l.72-2.05c.37-.12.73-.27 1.07-.44l1.84 1.17a16.56 16.56 0 0 0 1.28-1.29l-1.17-1.84c.17-.34.32-.7.44-1.07l2.05-.72z" />
-                  </svg>
-                }
-                label="Oportunidades"
-                active={activeMenu === 'Oportunidades'}
-                onClick={() => setActiveMenu('Oportunidades')}
-              />
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z" />
-                  </svg>
-                }
-                label="Criar solução"
-                active={activeMenu === 'Criar solução'}
-                onClick={() => setActiveMenu('Criar solução')}
-              />
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                    <path d="M2 12h20" />
-                  </svg>
-                }
-                label="Benefícios"
-                active={activeMenu === 'Benefícios'}
-                onClick={() => setActiveMenu('Benefícios')}
-              />
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <path d="M3 9h18" />
-                    <path d="M9 21V9" />
-                  </svg>
-                }
-                label="Painel"
-                active={activeMenu === 'Painel'}
-                onClick={() => setActiveMenu('Painel')}
-              />
-            </div>
-          </div>
-
-          {/* GERAL Section */}
-          <div style={{ marginTop: 'auto' }}>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: '#1E293B',
-                letterSpacing: '0.05em',
-                marginBottom: '8px',
-                paddingLeft: '12px',
-                textTransform: 'uppercase',
-              }}
-            >
-              GERAL
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                  </svg>
-                }
-                label="Ajuda"
-                active={activeMenu === 'Ajuda'}
-                onClick={() => setActiveMenu('Ajuda')}
-              />
-              <SidebarItem
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16 17 21 12 16 7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                  </svg>
-                }
-                label="Sair"
-                active={activeMenu === 'Sair'}
-                onClick={() => setActiveMenu('Sair')}
-              />
-            </div>
-          </div>
-        </aside>
+        <Sidebar activeItem="criar-solucao" />
 
         {/* ── Main Work Area ── */}
         <main
@@ -790,45 +586,4 @@ export default function NetpitchPage() {
 }
 
 // ── Sidebar Sub-item ──
-interface SidebarItemProps {
-  icon: React.ReactNode
-  label: string
-  active?: boolean
-  onClick?: () => void
-}
 
-function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '10px 12px',
-        borderRadius: '8px',
-        fontSize: '14px',
-        fontWeight: active ? 600 : 500,
-        color: active ? '#00a8b5' : '#0F172A',
-        backgroundColor: active ? 'rgba(0, 168, 181, 0.08)' : 'transparent',
-        cursor: 'pointer',
-        transition: 'all 0.15s ease',
-      }}
-      onMouseEnter={e => {
-        if (!active) {
-          e.currentTarget.style.backgroundColor = '#F1F5F9'
-        }
-      }}
-      onMouseLeave={e => {
-        if (!active) {
-          e.currentTarget.style.backgroundColor = 'transparent'
-        }
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', color: active ? '#00a8b5' : '#0F172A' }}>
-        {icon}
-      </div>
-      <span>{label}</span>
-    </div>
-  )
-}

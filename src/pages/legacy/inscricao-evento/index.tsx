@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-
-import logoCoreto from '../../../assets/logo-coreto.png'
-import logoAbdi from '../../../assets/logo-abdi.png'
-import logoEmprel from '../../../assets/logo-emprel.png'
+import Header from '../../../components/Header'
 import bannerCoreto from '../../../assets/banner-inscricao-evento.png'
 
 export default function InscricaoEventoPage() {
@@ -40,33 +37,7 @@ export default function InscricaoEventoPage() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#EEF2F5', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', display: 'flex', flexDirection: 'column', color: '#1A202C' }}>
       
-      {/* ── Header Global ── */}
-      <header style={{
-        backgroundColor: '#fff', height: '60px', padding: '0 32px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 30,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
-      }}>
-        {/* Left Logos */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Link to="/legacy" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src={logoCoreto} alt="Coreto" style={{ height: '30px', objectFit: 'contain' }} />
-          </Link>
-          <div style={{ width: '1px', height: '26px', backgroundColor: '#e2e8f0' }} />
-          <img src={logoAbdi} alt="ABDI" style={{ height: '26px', objectFit: 'contain' }} />
-          <img src={logoEmprel} alt="Emprel" style={{ height: '22px', objectFit: 'contain' }} />
-        </div>
-
-        {/* Right Nav Link */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link to="/legacy" style={{
-            fontSize: '13px', fontWeight: 600, color: '#00a8b5', textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: '6px'
-          }}>
-            <span>← Voltar ao Legado</span>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Main Content Container ── */}
       <main style={{ flex: 1, padding: '32px 20px', maxWidth: '880px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>

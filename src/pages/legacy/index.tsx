@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Header from '../../components/Header'
 
 // ─────────────────────────────────────────────
 // Registro de páginas do legado Bubble
@@ -17,6 +18,72 @@ const LEGACY_PAGES: LegacyPage[] = [
     slug: '404',
     name: 'Página de Erro 404',
     description: 'Página de erro 404 padrão quando um link não existe, com mensagem amigável, imagem ilustrativa e links de navegação.',
+    status: 'done',
+  },
+  {
+    slug: 'home',
+    name: 'Home — Portal Principal CORETO',
+    description: 'Página inicial do portal CORETO com busca rápida de oportunidades/resolvedores/organizações, cards de destaques e oportunidades em destaque.',
+    status: 'done',
+  },
+  {
+    slug: 'home-arianov0',
+    name: 'Home — Ariano Call / Portal CORETO',
+    description: 'Página inicial completa do ecossistema CORETO com busca de oportunidades, atalhos do Ariano Call e feeds de resolvedores/organizadores.',
+    status: 'done',
+  },
+  {
+    slug: 'avaliador-premiorec',
+    name: 'Área do Avaliador — Meus Programas',
+    description: 'Painel Kanban de acompanhamento e avaliação de inscrições por fases.',
+    status: 'done',
+  },
+  {
+    slug: 'avaliador-trilha',
+    name: 'Área do Avaliador — Trilha E.I.T.A! Recife',
+    description: 'Painel de acompanhamento e avaliação por critérios de propostas submetidas no 3º Ciclo E.I.T.A! Recife.',
+    status: 'done',
+  },
+  {
+    slug: 'bo',
+    name: 'Back Office (BO) — Painel de Operações',
+    description: 'Painel administrativo e operacional com métricas gerais, gestão de Organizações, Iniciativas, Usuários e disparos de Operações Críticas.',
+    status: 'done',
+  },
+  {
+    slug: 'caminhos-fase2',
+    name: 'Trilha Caminhos — Centelha PE',
+    description: 'Trilha de capacitação e submissão de propostas para o edital Centelha PE, com mentorias sob demanda, suporte com IA e aulas 100% online.',
+    status: 'done',
+  },
+  {
+    slug: 'complete-inscricao',
+    name: 'Conclusão de Cadastro — Startup & Resolvedor',
+    description: 'Formulário de conclusão de cadastro da startup com papel, dedicação, pitch, gerador de assuntos de conexão com IA e CNPJ.',
+    status: 'done',
+  },
+  {
+    slug: 'eita',
+    name: '3º Ciclo de Inovação Aberta e.i.t.a! Recife',
+    description: 'Portal oficial do 3º Ciclo E.I.T.A! Recife com fases, desafios públicos, prototipagem, MVP, discord e interação.',
+    status: 'done',
+  },
+  {
+    slug: 'hackercidadao',
+    name: 'Hacker Cidadão 13.0',
+    description: 'Portal oficial da maratona de inovação com desafios, cronograma, prêmios, curadores e regulamento.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-conexoes',
+    name: 'Criar Conexão — Bora criar teu perfil?',
+    description: 'Formulário de cadastro de perfil pessoal e da startup com assistente IA, seleção de categorias e upload de avatar/logo.',
+    status: 'done',
+  },
+  {
+    slug: 'inscricao-desafio',
+    name: 'Crie seu Desafio em CORETO',
+    description: 'Formulário completo com turbinador de campos via IA, gerador de tags e validade.',
     status: 'done',
   },
   {
@@ -128,6 +195,12 @@ const LEGACY_PAGES: LegacyPage[] = [
     status: 'done',
   },
   {
+    slug: 'startupworldcup',
+    name: 'Startup World Cup 2025 Regional Recife',
+    description: 'Portal oficial da etapa regional Recife da maior competição de startups do mundo com prêmio de US$ 1.000.000 no Vale do Silício, calendário, parceiros e pré-inscrição.',
+    status: 'done',
+  },
+  {
     slug: 'startups_e_meu_ecossistema',
     name: 'Startups & Meu Ecossistema',
     description: 'Vitrine de startups do ecossistema do Recife com busca em tempo real, filtro por categorias, cards interativos e modal de detalhes com informações e contatos.',
@@ -136,7 +209,7 @@ const LEGACY_PAGES: LegacyPage[] = [
   {
     slug: 'trilha-eita',
     name: 'Trilha e.i.t.a! Recife (3º Ciclo Inovação Aberta)',
-    description: 'Página da Trilha e.i.t.a! Recife com banner oficial, abas, botão de adicionar coluna, e formulário de inscrição em 7 seçõesSan e sub-seções sanfonadas com editor rico e upload.',
+    description: 'Página da Trilha e.i.t.a! Recife com banner oficial, abas, botão de adicionar coluna, e formulário de inscrição em 7 seções e sub-seções sanfonadas com editor rico e upload.',
     status: 'done',
   },
 ]
@@ -155,15 +228,16 @@ const statusColor: Record<LegacyPage['status'], string> = {
 
 export default function LegacyIndexPage() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0f172a',
-        color: '#f1f5f9',
-        fontFamily: "'Inter', 'Segoe UI', sans-serif",
-        padding: '48px 32px',
-      }}
-    >
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0f172a' }}>
+      <Header />
+      <div
+        style={{
+          flex: 1,
+          color: '#f1f5f9',
+          fontFamily: "'Inter', 'Segoe UI', sans-serif",
+          padding: '48px 32px',
+        }}
+      >
       {/* Header */}
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <div style={{ marginBottom: 8 }}>
@@ -254,6 +328,7 @@ export default function LegacyIndexPage() {
           </div>
         )}
       </div>
+    </div>
     </div>
   )
 }

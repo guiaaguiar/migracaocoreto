@@ -92,14 +92,43 @@ A seção de legado é um arquivo histórico da plataforma CORETO na versão Bub
 
 > ⚠️ Esta seção é restrita a administradores. A proteção por role Keycloak será implementada em etapa futura.
 
-### Páginas Convertidas
+### Páginas Convertidas (33 Páginas)
 
 | Página | Rota | Status |
 |---|---|---|
-| Inscrição Desafio V1 | `/legacy/inscricao-desafio-v1` | ✅ Concluída |
+| Página de Erro 404 | `/legacy/404` | ✅ Concluída |
+| Home — Portal Principal CORETO | `/legacy/home` | ✅ Concluída |
+| Home — Ariano Call / Portal CORETO | `/legacy/home-arianov0` | ✅ Concluída |
+| Área do Avaliador — Meus Programas | `/legacy/avaliador-premiorec` | ✅ Concluída |
+| Área do Avaliador — Trilha E.I.T.A! Recife | `/legacy/avaliador-trilha` | ✅ Concluída |
+| Back Office (BO) — Painel de Operações | `/legacy/bo` | ✅ Concluída |
+| Trilha Caminhos — Centelha PE | `/legacy/caminhos-fase2` | ✅ Concluída |
+| Conclusão de Cadastro — Startup & Resolvedor | `/legacy/complete-inscricao` | ✅ Concluída |
+| 3º Ciclo de Inovação Aberta e.i.t.a! Recife | `/legacy/eita` | ✅ Concluída |
+| Hacker Cidadão 13.0 | `/legacy/hackercidadao` | ✅ Concluída |
+| Criar Conexão — Bora criar teu perfil? | `/legacy/inscricao-conexoes` | ✅ Concluída |
+| Crie seu Desafio em CORETO | `/legacy/inscricao-desafio` | ✅ Concluída |
+| Crie sua Oportunidade (V1) | `/legacy/inscricao-desafio-v1` | ✅ Concluída |
 | Inscrição no Novo Coreto | `/legacy/inscricao-evento` | ✅ Concluída |
-
-> As páginas são adicionadas à medida que o HTML do Bubble e os screenshots são fornecidos.
+| Cadastrar Organização | `/legacy/inscricao-organizacao` | ✅ Concluída |
+| Cadastro de Resolvedores | `/legacy/inscricao-resolvedor` | ✅ Concluída |
+| Inscrição Startup (Iniciativa) | `/legacy/inscricao-startup` | ✅ Concluída |
+| Perfil de Talento | `/legacy/inscricao-talento` | ✅ Concluída |
+| Perfil de Talento (V2.1) | `/legacy/inscricao-v2_1` | ✅ Concluída |
+| Mapa do Ecossistema | `/legacy/mapa-ecossistema` | ✅ Concluída |
+| Matching com Coreto (Totem 1080x1920) | `/legacy/matchariano` | ✅ Concluída |
+| Ecossistema - Organizações | `/legacy/meu_eco-organizacoes` | ✅ Concluída |
+| NETpitch (IA Pitch Builder) | `/legacy/netpitch` | ✅ Concluída |
+| NETpitch V2 (Gerador de Pitches com Layla) | `/legacy/netpitchv2` | ✅ Concluída |
+| NITRO 2026 | `/legacy/nitro` | ✅ Concluída |
+| Dashboard Inscrições NITRO 2026 | `/legacy/nitro-inscricoes` | ✅ Concluída |
+| Oportunidades & Desafios | `/legacy/oportunidades` | ✅ Concluída |
+| Escritório de Parcerias Inovadoras | `/legacy/parcerias-inovadoras` | ✅ Concluída |
+| Prêmio Recife de Inovação 2025 | `/legacy/premio-inovacao-rec` | ✅ Concluída |
+| Quiz: Descubra o Seu Lugar na Inovação | `/legacy/quizz-descubra_seu_lugar` | ✅ Concluída |
+| Startup World Cup 2025 Regional Recife | `/legacy/startupworldcup` | ✅ Concluída |
+| Startups & Meu Ecossistema | `/legacy/startups_e_meu_ecossistema` | ✅ Concluída |
+| Trilha e.i.t.a! Recife (3º Ciclo Inovação Aberta) | `/legacy/trilha-eita` | ✅ Concluída |
 
 ---
 
@@ -185,6 +214,6 @@ Adicione uma linha na tabela "Páginas Convertidas" acima.
 - [x] Página de índice `/legacy`
 - [x] README de documentação
 - [x] Design system documentado (`docs/relatoriopages/design-system-coreto.md`)
-- [x] Conversão: `inscricao-desafio-v1`
+- [x] Conversão & Unificação: 33 páginas legadas convertidas e mescladas no projeto principal
 - [ ] Proteção por role Keycloak nas rotas `/legacy/*`
-- [ ] Conversão das demais páginas do Bubble (em andamento)
+
