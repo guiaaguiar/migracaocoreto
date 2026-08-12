@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import LegacyIndexPage from './pages/legacy'
 import NotFoundPage from './pages/legacy/404'
 import AvaliadorPremioRecPage from './pages/legacy/avaliador-premiorec'
@@ -34,9 +35,20 @@ import StartupWorldCupPage from './pages/legacy/startupworldcup'
 import StartupsEMeuEcossistemaPage from './pages/legacy/startups_e_meu_ecossistema'
 import TrilhaEitaPage from './pages/legacy/trilha-eita'
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Rota raiz — redireciona para /legacy por enquanto */}
         <Route path="/" element={<Navigate to="/legacy" replace />} />
