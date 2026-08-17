@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import bannerEitaTrilha from '../../../assets/banner-eita-trilha.png'
 
 interface EitaChallenge {
   id: string
@@ -334,107 +335,21 @@ export default function EitaPage() {
           {/* ── Top Hero Banner: 3º CICLO DE INOVAÇÃO ABERTA e.i.t.a! Recife ── */}
           <div
             style={{
-              position: 'relative',
+              backgroundColor: '#FFFFFF',
               borderRadius: '16px',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
               overflow: 'hidden',
-              background: 'linear-gradient(95deg, #071E54 0%, #0F3BA0 35%, #581C87 70%, #EA580C 100%)',
-              padding: '48px 40px',
-              color: '#FFFFFF',
-              boxShadow: '0 20px 30px -5px rgba(15, 59, 160, 0.25)',
               marginBottom: '20px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
             }}
           >
-            {/* Background Geo/Grid Overlay */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
-                backgroundSize: '24px 24px',
-                pointerEvents: 'none',
-                opacity: 0.6,
-              }}
+            <img
+              src={bannerEitaTrilha}
+              alt="3º Ciclo de Inovação Aberta e.i.t.a! Recife Banner"
+              style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '420px', objectFit: 'cover' }}
             />
-
-            {/* Emblem Logo Graphic */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                zIndex: 2,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '28px',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  color: '#FFFFFF',
-                  textShadow: '0 2px 10px rgba(0,0,0,0.3)',
-                  marginBottom: '4px',
-                }}
-              >
-                3º CICLO DE INOVAÇÃO ABERTA
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: '8px',
-                  lineHeight: 1,
-                  margin: '8px 0',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '64px',
-                    fontWeight: 900,
-                    fontFamily: "'Syncopate', 'Work Sans', sans-serif",
-                    letterSpacing: '-0.03em',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  e.i.t.a!
-                </span>
-                <span
-                  style={{
-                    fontSize: '42px',
-                    fontWeight: 700,
-                    color: '#FFFFFF',
-                    fontFamily: "'DM Sans', sans-serif",
-                  }}
-                >
-                  Recife
-                </span>
-              </div>
-
-              <div
-                style={{
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  letterSpacing: '0.22em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  marginTop: '4px',
-                }}
-              >
-                ESQUADRÃO DE INOVAÇÃO E TRANSFORMAÇÃO ABERTA
-              </div>
-            </div>
           </div>
+
 
           {/* ── Sub-navigation Pills / Tabs ── */}
           <div

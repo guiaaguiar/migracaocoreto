@@ -28,31 +28,54 @@ Repositório de migração da plataforma **CORETO** de Bubble (low-code) para o 
 | Vitest | 4 | Testes unitários e de componentes |
 | ESLint | — | Análise estática |
 
-### Backend (referência)
+### Backend & Banco de Dados
 | Tecnologia | Versão | Função |
 |---|---|---|
-| Java | 21 | Linguagem principal |
-| Spring Boot | 3.4.3 | Framework de API REST |
-| Maven | — | Build e dependências |
-| PostgreSQL | — | Banco de dados principal |
-| Spring Security + OAuth2 | — | Autenticação via Keycloak/JWT |
+| PostgreSQL | 16 | Banco de dados relacional principal |
+| Node.js / Express | 4 / 22+ | API REST para servir dados reais ao frontend |
+| TypeScript | 5.9 | Tipagem estática compartilhada |
+| pg (node-postgres) | 8 | Pool de conexões otimizado com PostgreSQL |
+| Docker Compose | — | Orquestração local do PostgreSQL 16 + Adminer |
 
 ---
 
-## Como Rodar Localmente
+## Como Rodar Localmente (Full Stack)
 
+### 1. Iniciar o Banco PostgreSQL
 ```bash
-# Instalar dependências
-npm install
+# Subir container PostgreSQL 16 e Adminer via Docker Compose
+docker-compose up -d
 
-# Rodar em modo de desenvolvimento
-npm run dev
-
-# Build de produção
-npm run build
+# Ou se já tiver um PostgreSQL instalado localmente na porta 5432:
+# Basta conferir as variáveis no arquivo .env
 ```
 
-O dev server sobe em `http://localhost:5173`.
+### 2. Configurar Schema e Dados Reais (Seed)
+```bash
+# Executa 01_schema.sql (DDL) e 02_seed.sql (dados reais de Recife) no PostgreSQL
+npm run db:setup
+```
+
+### 3. Rodar Frontend e Backend API
+```bash
+# Opção A: Rodar tudo junto em paralelo (Frontend + API REST)
+npm run dev:all
+
+# Opção B: Rodar em terminais separados
+npm run server:dev  # API backend na porta 3001
+npm run dev         # Frontend Vite na porta 5173 (com proxy /api automático)
+```
+
+O frontend estará em `http://localhost:5173` e a API REST em `http://localhost:3001/api`.
+O painel visual do banco (Adminer) estará em `http://localhost:8080` (Sistema: PostgreSQL, Servidor: postgres, Usuário: postgres, Senha: postgres, Base: coreto_db).
+
+---
+
+## Estrutura do Banco de Dados PostgreSQL
+
+Os scripts de banco residem em `database/init/`:
+- `01_schema.sql`: Extensões (`uuid-ossp`, `pg_trgm`, `citext`), tabelas relacionais (`users`, `organizations`, `startups`, `opportunities`, `ecosystem_actors`, `programs`, `inscriptions`, `evaluations`, `initiatives`, `pitches`), índices de busca textual e triggers de atualização de timestamps.
+- `02_seed.sql`: Carga com dados reais do ecossistema de Recife (EMPREL, Polotec UFPE, Porto Digital, startups reais, editais EITA, NITRO 2026, Hacker Cidadão 13, atores georreferenciados no mapa e iniciativas).
 
 ---
 
@@ -60,6 +83,18 @@ O dev server sobe em `http://localhost:5173`.
 
 ```
 migracaocoreto/
+├── database/                      # Scripts SQL para PostgreSQL
+│   └── init/
+│       ├── 01_schema.sql          # DDL (tabelas, índices, triggers, extensions)
+│       └── 02_seed.sql            # Carga de dados reais de Recife
+├── server/                        # API Backend REST (Node.js + Express + TypeScript)
+│   ├── src/
+│   │   ├── db/
+│   │   │   ├── pool.ts            # Conexão Pool com PostgreSQL
+│   │   │   └── setup.ts           # Runner de migração e seed (npm run db:setup)
+│   │   ├── routes/                # Rotas REST (/api/startups, /api/oportunidades, etc.)
+│   │   └── index.ts               # Servidor Express principal
+│   └── tsconfig.json
 ├── public/                        # Assets públicos (favicon, imagens estáticas)
 ├── docs/
 │   └── relatoriopages/
@@ -69,13 +104,22 @@ migracaocoreto/
 │   ├── App.tsx                    # Configuração de rotas (react-router-dom v7)
 │   ├── index.css                  # Tailwind CSS + reset global
 │   ├── assets/                    # Logos e imagens (logo-coreto.png, logo-abdi.png, logo-emprel.png)
+│   ├── services/                  # Camada de consumo da API PostgreSQL
+│   │   ├── api.ts                 # Cliente HTTP base
+│   │   ├── startupsService.ts
+│   │   ├── oportunidadesService.ts
+│   │   ├── ecossistemaService.ts
+│   │   ├── boService.ts
+│   │   └── programsService.ts
 │   ├── pages/
 │   │   ├── legacy/
 │   │   │   ├── index.tsx          # Índice visual do legado (/legacy)
 │   │   │   └── [nome-da-pagina]/
-│   │   │       └── index.tsx      # Cada página Bubble convertida para React
+│   │   │       └── index.tsx      # Páginas Bubble convertidas para React
 │   │   └── (demais páginas do novo CORETO)
 │   └── components/                # Componentes globais reutilizáveis
+├── docker-compose.yml             # PostgreSQL 16 + Adminer
+├── .env / .env.example            # Configurações de ambiente
 ├── index.html
 ├── vite.config.ts
 ├── tsconfig.json
@@ -215,5 +259,9 @@ Adicione uma linha na tabela "Páginas Convertidas" acima.
 - [x] README de documentação
 - [x] Design system documentado (`docs/relatoriopages/design-system-coreto.md`)
 - [x] Conversão & Unificação: 33 páginas legadas convertidas e mescladas no projeto principal
+- [x] Banco de dados PostgreSQL (DDL `01_schema.sql` + Seed `02_seed.sql` + Docker Compose)
+- [x] API REST Backend em Express/TypeScript (`server/`) e camada de serviços (`src/services/`)
+- [x] Integração de consumo de dados reais com fallback resiliente
 - [ ] Proteção por role Keycloak nas rotas `/legacy/*`
+
 

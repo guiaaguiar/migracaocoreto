@@ -238,13 +238,56 @@ const CATEGORIAS_OPTIONS = [
   'Plataforma de Inovação',
 ]
 
+import { useEffect } from 'react'
+import { startupsService, type StartupItem } from '../../../services/startupsService'
+
 export default function StartupsEMeuEcossistemaPage() {
+  const [startupsList, setStartupsList] = useState<Startup[]>(MOCK_STARTUPS)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLiveFromDb, setIsLiveFromDb] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Todas as Categorias')
   const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null)
 
+  useEffect(() => {
+    let isMounted = true
+    setIsLoading(true)
+    startupsService.getAll()
+      .then((data: StartupItem[]) => {
+        if (!isMounted || !data || data.length === 0) return
+        const mapped: Startup[] = data.map(item => ({
+          id: item.id,
+          nome: item.name,
+          categoria: item.category,
+          logoText: item.logoText,
+          logoBg: item.logoBg,
+          logoType: item.logoType || 'coreto',
+          trl: item.trl,
+          tipoBadge: item.tipoBadge || 'Startup',
+          tags: item.tags || [],
+          descricao: item.descricao || '',
+          site: item.site,
+          email: item.email,
+          responsavel: item.responsavel,
+          cidade: item.cidade,
+        }))
+        setStartupsList(mapped)
+        setIsLiveFromDb(true)
+      })
+      .catch(() => {
+        // Fallback para MOCK_STARTUPS se o backend ainda estiver iniciando
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const filteredStartups = useMemo(() => {
-    return MOCK_STARTUPS.filter(item => {
+    return startupsList.filter(item => {
       const matchesCategory =
         selectedCategory === 'Todas as Categorias' || item.categoria === selectedCategory
 
@@ -259,7 +302,7 @@ export default function StartupsEMeuEcossistemaPage() {
 
       return matchesCategory && matchesSearch
     })
-  }, [searchTerm, selectedCategory])
+  }, [startupsList, searchTerm, selectedCategory])
 
   return (
     <div

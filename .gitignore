@@ -21,5 +21,11 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+# Env files
+.env
+.env*.local
+
+# Server build
+server/dist
+
 .antigravitycli

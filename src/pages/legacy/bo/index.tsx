@@ -105,6 +105,9 @@ const INITIAL_USERS: UserItem[] = [
   },
 ]
 
+import { useEffect } from 'react'
+import { boService, type BoOrganization, type BoInitiative, type BoUser } from '../../../services/boService'
+
 export default function LegacyBoPage() {
   // State for Lists & Searching
   const [organizations, setOrganizations] = useState<Organization[]>(INITIAL_ORGANIZATIONS)
@@ -115,6 +118,55 @@ export default function LegacyBoPage() {
 
   const [users, setUsers] = useState<UserItem[]>(INITIAL_USERS)
   const [searchUser, setSearchUser] = useState<string>('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    // Carregar iniciativas reais
+    boService.getInitiatives()
+      .then((data: BoInitiative[]) => {
+        if (!isMounted || !data || data.length === 0) return
+        setInitiatives(data.map(i => ({
+          id: i.id,
+          status: i.status,
+          title: i.title,
+          date: i.date || 'Recente',
+          link: i.link || '#',
+        })))
+      })
+      .catch(() => {})
+
+    // Carregar usuários reais
+    boService.getUsers()
+      .then((data: BoUser[]) => {
+        if (!isMounted || !data || data.length === 0) return
+        setUsers(data.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          status: u.status,
+          date: u.date,
+          tags: u.tags || [],
+        })))
+      })
+      .catch(() => {})
+
+    // Carregar organizações reais
+    boService.getOrganizations()
+      .then((data: BoOrganization[]) => {
+        if (!isMounted || !data || data.length === 0) return
+        setOrganizations(data.map(o => ({
+          id: o.id,
+          name: o.name,
+          tags: o.tags || [],
+        })))
+      })
+      .catch(() => {})
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Modals state
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false)

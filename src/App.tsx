@@ -94,6 +94,7 @@ function App() {
         <Route path="/legacy/startups-e-meu-ecossistema" element={<StartupsEMeuEcossistemaPage />} />
         <Route path="/legacy/trilha-eita" element={<TrilhaEitaPage />} />
         <Route path="/trilha-eita" element={<TrilhaEitaPage />} />
+        <Route path="/eita" element={<EitaPage />} />
 
         {/* Fallback — Qualquer link inexistente redireciona para /404 */}
         <Route path="*" element={<Navigate to="/404" replace />} />
