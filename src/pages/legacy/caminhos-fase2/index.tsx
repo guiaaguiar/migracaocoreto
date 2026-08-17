@@ -12,7 +12,6 @@ export default function CaminhosFase2Page() {
   const [isInscricaoModalOpen, setIsInscricaoModalOpen] = useState(false)
   const [isAiModalOpen, setIsAiModalOpen] = useState(false)
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
 
   // Registration Popup Form State
   const [nome, setNome] = useState('')
@@ -84,28 +83,6 @@ export default function CaminhosFase2Page() {
     setActiveTab('inicio')
   }
 
-  const faqItems = [
-    {
-      question: 'O que é a Trilha Caminhos?',
-      answer:
-        'A Trilha Caminhos é um programa de suporte, mentoria e capacitação contínua destinado a potenciais empreendedores e pesquisadores que desejam tirar suas ideias inovadoras do papel e submetê-las com alta qualidade ao edital Centelha PE.',
-    },
-    {
-      question: 'Quem pode participar da Trilha Caminhos e do Centelha PE?',
-      answer:
-        'Pessoas físicas (maiores de 18 anos) residentes em qualquer município do estado de Pernambuco, bem como empresas nascentes com faturamento anual de até R$ 4,8 milhões e constituição recente.',
-    },
-    {
-      question: 'Qual é o valor do fomento concedido no edital Centelha PE?',
-      answer:
-        'Cada projeto selecionado ao final das fases do Centelha PE poderá receber até R$ 60.000,00 (sessenta mil reais) em subvenção econômica não reembolsável, além de bolsas de indução à inovação e suporte especializado.',
-    },
-    {
-      question: 'Como funciona o recurso EDIT.AI?',
-      answer:
-        'O EDIT.AI é uma ferramenta de inteligência artificial assistida integrada à plataforma CORETO que orienta o proponente no refinamento do modelo de negócios, clareza técnica e estruturação do pitch da proposta.',
-    },
-  ]
 
   return (
     <div
@@ -523,125 +500,6 @@ export default function CaminhosFase2Page() {
                   <p style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.5, margin: 0 }}>
                     Trilha de aprendizagem flexível com conteúdos práticos acessíveis para empreendedores de qualquer cidade de Pernambuco.
                   </p>
-                </div>
-              </div>
-
-              {/* Section 3: FASES DO EDITAL CENTELHA PE */}
-              <div
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '8px',
-                  border: '1px solid #E2E8F0',
-                  padding: '24px 28px',
-                  marginBottom: '24px',
-                }}
-              >
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0F2C59', marginTop: 0, marginBottom: '16px' }}>
-                  Fases de Seleção do Edital Centelha PE
-                </h3>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-                  <div style={{ padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '6px', borderLeft: '4px solid #0077B6' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#0077B6', textTransform: 'uppercase', marginBottom: '4px' }}>
-                      Fase 1
-                    </div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A202C', marginBottom: '6px' }}>
-                      Ideias Inovadoras
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.4 }}>
-                      Apresentação do problema, solução proposta, diferencial de inovação e potencial de mercado.
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '6px', borderLeft: '4px solid #00A8B5' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#00A8B5', textTransform: 'uppercase', marginBottom: '4px' }}>
-                      Fase 2
-                    </div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A202C', marginBottom: '6px' }}>
-                      Projeto de Empreendimento
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.4 }}>
-                      Detalhamento do plano de negócios, estratégia comercial, equipe e viabilidade técnica.
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '6px', borderLeft: '4px solid #E05C5C' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#E05C5C', textTransform: 'uppercase', marginBottom: '4px' }}>
-                      Fase 3
-                    </div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A202C', marginBottom: '6px' }}>
-                      Projeto de Fomento
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.4 }}>
-                      Plano de aplicação dos recursos financeiros (até R$ 60 mil) e cronograma de prototipagem.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 4: DÚVIDAS FREQUENTES (FAQ) */}
-              <div
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '8px',
-                  border: '1px solid #E2E8F0',
-                  padding: '24px 28px',
-                }}
-              >
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0F2C59', marginTop: 0, marginBottom: '16px' }}>
-                  Perguntas Frequentes
-                </h3>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {faqItems.map((item, idx) => {
-                    const isOpen = openFaqIndex === idx
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '6px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                          style={{
-                            width: '100%',
-                            padding: '14px 18px',
-                            backgroundColor: isOpen ? '#F8FAFC' : '#FFFFFF',
-                            border: 'none',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            fontSize: '13px',
-                            fontWeight: 700,
-                            color: '#0F2C59',
-                          }}
-                        >
-                          <span>{item.question}</span>
-                          <span style={{ fontSize: '14px', color: '#0077B6' }}>{isOpen ? '−' : '+'}</span>
-                        </button>
-                        {isOpen && (
-                          <div
-                            style={{
-                              padding: '14px 18px',
-                              backgroundColor: '#FFFFFF',
-                              borderTop: '1px solid #E2E8F0',
-                              fontSize: '12px',
-                              color: '#475569',
-                              lineHeight: 1.5,
-                            }}
-                          >
-                            {item.answer}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
                 </div>
               </div>
             </div>
