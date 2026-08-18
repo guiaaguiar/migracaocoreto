@@ -52,8 +52,11 @@ docker-compose up -d
 
 ### 2. Configurar Schema e Dados Reais (Seed)
 ```bash
-# Executa 01_schema.sql (DDL) e 02_seed.sql (dados reais de Recife) no PostgreSQL
+# Opção A: Executar setup completo (Schema moderno + 75 tabelas legadas + Seeds)
 npm run db:setup
+
+# Opção B: Executar especificamente a migração e inserts das 75 tabelas do Bubble
+npm run db:bubble
 ```
 
 ### 3. Rodar Frontend e Backend API
@@ -73,9 +76,17 @@ O painel visual do banco (Adminer) estará em `http://localhost:8080` (Sistema: 
 
 ## Estrutura do Banco de Dados PostgreSQL
 
-Os scripts de banco residem em `database/init/`:
-- `01_schema.sql`: Extensões (`uuid-ossp`, `pg_trgm`, `citext`), tabelas relacionais (`users`, `organizations`, `startups`, `opportunities`, `ecosystem_actors`, `programs`, `inscriptions`, `evaluations`, `initiatives`, `pitches`), índices de busca textual e triggers de atualização de timestamps.
-- `02_seed.sql`: Carga com dados reais do ecossistema de Recife (EMPREL, Polotec UFPE, Porto Digital, startups reais, editais EITA, NITRO 2026, Hacker Cidadão 13, atores georreferenciados no mapa e iniciativas).
+O banco de dados do CORETO contempla tanto o **schema relacional moderno** quanto o **mapeamento completo das 75 tabelas legadas do Bubble**:
+
+### 1. Camada Moderna de Domínio
+- `database/init/01_schema.sql`: Extensões (`uuid-ossp`, `pg_trgm`, `citext`), tabelas relacionais normalizadas (`users`, `organizations`, `startups`, `opportunities`, `ecosystem_actors`, `programs`, `inscriptions`, `evaluations`, `initiatives`, `pitches`), índices de busca textual e triggers de atualização de timestamps.
+- `database/init/02_seed.sql`: Carga com dados reais do ecossistema de Recife (EMPREL, Polotec UFPE, Porto Digital, startups, editais EITA, NITRO 2026, Hacker Cidadão 13, atores no mapa e iniciativas).
+
+### 2. Camada Legada do Bubble (75 Data Types Mapeados)
+- `database/init/03_bubble_tables.sql`: DDL completo das **75 tabelas** originadas do Bubble (`Academy`, `Assessment`, `Iniciativa`, `Organizacao`, `Oportunidade`, `Eita`, `Submissao_ConectaLabs`, `Submissao_ICT`, `Submissao_INPI`, `kanban`, `StatusLane`, `Task`, `User`, etc.).
+- `database/init/04_bubble_inserts.sql`: Scripts de `INSERT INTO` com carga de dados estruturados para todas as tabelas legadas.
+- `server/src/db/migrate-bubble.ts`: Script dedicado de migração para o schema Bubble (`npm run db:bubble`).
+- 📄 Relatório Técnico Completo: [`docs/relatoriopages/Relatorio-bd.md`](./docs/relatoriopages/Relatorio-bd.md)
 
 ---
 
@@ -85,37 +96,32 @@ Os scripts de banco residem em `database/init/`:
 migracaocoreto/
 ├── database/                      # Scripts SQL para PostgreSQL
 │   └── init/
-│       ├── 01_schema.sql          # DDL (tabelas, índices, triggers, extensions)
-│       └── 02_seed.sql            # Carga de dados reais de Recife
+│       ├── 01_schema.sql          # DDL moderno (tabelas, índices, triggers, extensions)
+│       ├── 02_seed.sql            # Carga de dados reais de Recife
+│       ├── 03_bubble_tables.sql   # DDL das 75 tabelas legadas do Bubble
+│       └── 04_bubble_inserts.sql  # Inserts de dados para as 75 tabelas legadas
 ├── server/                        # API Backend REST (Node.js + Express + TypeScript)
 │   ├── src/
 │   │   ├── db/
 │   │   │   ├── pool.ts            # Conexão Pool com PostgreSQL
-│   │   │   └── setup.ts           # Runner de migração e seed (npm run db:setup)
+│   │   │   ├── setup.ts           # Runner de setup completo (npm run db:setup)
+│   │   │   └── migrate-bubble.ts  # Runner específico das 75 tabelas (npm run db:bubble)
 │   │   ├── routes/                # Rotas REST (/api/startups, /api/oportunidades, etc.)
 │   │   └── index.ts               # Servidor Express principal
 │   └── tsconfig.json
 ├── public/                        # Assets públicos (favicon, imagens estáticas)
 ├── docs/
 │   └── relatoriopages/
-│       └── design-system-coreto.md  # ← Design system de referência (LEIA PRIMEIRO)
+│       ├── design-system-coreto.md  # ← Design system de referência (LEIA PRIMEIRO)
+│       └── Relatorio-bd.md          # ← Relatório de arquitetura e modelagem do banco
 ├── src/
 │   ├── main.tsx                   # Entry point da aplicação
 │   ├── App.tsx                    # Configuração de rotas (react-router-dom v7)
 │   ├── index.css                  # Tailwind CSS + reset global
-│   ├── assets/                    # Logos e imagens (logo-coreto.png, logo-abdi.png, logo-emprel.png)
+│   ├── assets/                    # Logos e imagens
 │   ├── services/                  # Camada de consumo da API PostgreSQL
-│   │   ├── api.ts                 # Cliente HTTP base
-│   │   ├── startupsService.ts
-│   │   ├── oportunidadesService.ts
-│   │   ├── ecossistemaService.ts
-│   │   ├── boService.ts
-│   │   └── programsService.ts
 │   ├── pages/
-│   │   ├── legacy/
-│   │   │   ├── index.tsx          # Índice visual do legado (/legacy)
-│   │   │   └── [nome-da-pagina]/
-│   │   │       └── index.tsx      # Páginas Bubble convertidas para React
+│   │   ├── legacy/                # 33 páginas Bubble convertidas para React
 │   │   └── (demais páginas do novo CORETO)
 │   └── components/                # Componentes globais reutilizáveis
 ├── docker-compose.yml             # PostgreSQL 16 + Adminer
@@ -248,6 +254,7 @@ Adicione uma linha na tabela "Páginas Convertidas" acima.
 | Documento | Descrição |
 |---|---|
 | [`docs/relatoriopages/design-system-coreto.md`](./docs/relatoriopages/design-system-coreto.md) | Paleta, tipografia, componentes e checklist do design system CORETO |
+| [`docs/relatoriopages/Relatorio-bd.md`](./docs/relatoriopages/Relatorio-bd.md) | Relatório de arquitetura do backend e mapeamento das 75 tabelas do Bubble |
 
 ---
 
@@ -260,6 +267,8 @@ Adicione uma linha na tabela "Páginas Convertidas" acima.
 - [x] Design system documentado (`docs/relatoriopages/design-system-coreto.md`)
 - [x] Conversão & Unificação: 33 páginas legadas convertidas e mescladas no projeto principal
 - [x] Banco de dados PostgreSQL (DDL `01_schema.sql` + Seed `02_seed.sql` + Docker Compose)
+- [x] Modelagem e DDL completo das 75 tabelas do Bubble no PostgreSQL (`03_bubble_tables.sql`)
+- [x] Seed e Inserts estruturados para as 75 tabelas legadas (`04_bubble_inserts.sql` + `migrate-bubble.ts`)
 - [x] API REST Backend em Express/TypeScript (`server/`) e camada de serviços (`src/services/`)
 - [x] Integração de consumo de dados reais com fallback resiliente
 - [ ] Proteção por role Keycloak nas rotas `/legacy/*`

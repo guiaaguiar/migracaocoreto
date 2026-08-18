@@ -9,6 +9,7 @@
     "server:build": "tsc -p server/tsconfig.json",
     "server:start": "node server/dist/index.js",
     "db:setup": "tsx server/src/db/setup.ts",
+    "db:bubble": "tsx server/src/db/migrate-bubble.ts",
     "dev:all": "concurrently -n \"VITE,API\" -c \"cyan,magenta\" \"npm run dev\" \"npm run server:dev\"",
     "build": "tsc -b && vite build",
     "lint": "oxlint",

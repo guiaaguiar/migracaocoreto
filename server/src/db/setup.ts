@@ -14,18 +14,30 @@ async function runSetup() {
   try {
     const schemaPath = path.resolve(process.cwd(), 'database', 'init', '01_schema.sql')
     const seedPath = path.resolve(process.cwd(), 'database', 'init', '02_seed.sql')
+    const bubbleTablesPath = path.resolve(process.cwd(), 'database', 'init', '03_bubble_tables.sql')
+    const bubbleInsertsPath = path.resolve(process.cwd(), 'database', 'init', '04_bubble_inserts.sql')
 
-    console.log(`📄 Executando DDL Schema: ${schemaPath}`)
+    console.log(`📄 [1/4] Executando DDL Schema Moderno: ${schemaPath}`)
     const schemaSql = fs.readFileSync(schemaPath, 'utf-8')
     await pool.query(schemaSql)
-    console.log('✅ Tabelas, índices e triggers criados com sucesso!')
+    console.log('✅ Schema moderno criado!')
 
-    console.log(`🌱 Executando Seed de Dados: ${seedPath}`)
+    console.log(`🌱 [2/4] Executando Seed Moderno: ${seedPath}`)
     const seedSql = fs.readFileSync(seedPath, 'utf-8')
     await pool.query(seedSql)
-    console.log('✅ Dados de seed reais do ecossistema CORETO inseridos com sucesso!')
+    console.log('✅ Seed moderno inserido!')
 
-    console.log('🎉 Setup do banco PostgreSQL finalizado com êxito!')
+    console.log(`📄 [3/4] Executando DDL das 75 Tabelas Legadas (Bubble): ${bubbleTablesPath}`)
+    const bubbleTablesSql = fs.readFileSync(bubbleTablesPath, 'utf-8')
+    await pool.query(bubbleTablesSql)
+    console.log('✅ 75 Tabelas legadas criadas!')
+
+    console.log(`🌱 [4/4] Executando Inserts das 75 Tabelas Legadas: ${bubbleInsertsPath}`)
+    const bubbleInsertsSql = fs.readFileSync(bubbleInsertsPath, 'utf-8')
+    await pool.query(bubbleInsertsSql)
+    console.log('✅ Inserts das 75 tabelas concluídos!')
+
+    console.log('🎉 Setup completo do banco PostgreSQL finalizado com êxito!')
   } catch (error) {
     console.error('❌ Erro durante o setup do banco de dados:', error)
     process.exit(1)
