@@ -6,6 +6,25 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ==========================================
+-- 0. User (Usuários Bubble)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS "User" (
+  "id" VARCHAR(255) PRIMARY KEY,
+  "activeProfile" VARCHAR(255),
+  "CPF" VARCHAR(255),
+  "current" VARCHAR(255),
+  "isAdmin" BOOLEAN,
+  "name" VARCHAR(255),
+  "profile" TEXT,
+  "tmppass" VARCHAR(255),
+  "email" VARCHAR(255),
+  "created_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "modified_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "creator_id" VARCHAR(255),
+  "slug" VARCHAR(255)
+);
+
+-- ==========================================
 -- 1. Academy
 -- ==========================================
 CREATE TABLE IF NOT EXISTS "Academy" (
@@ -62,7 +81,9 @@ CREATE TABLE IF NOT EXISTS "AssessmentPremioFaseDois" (
   "id" VARCHAR(255) PRIMARY KEY,
   "Coment" TEXT,
   "Crietereas" TEXT[],
+  "Inscricao" TEXT,
   "Inscricao_id" VARCHAR(255),
+  "Mentor" VARCHAR(255),
   "Mentor_id" VARCHAR(255),
   "Rates" TEXT[],
   "result" NUMERIC(15, 2),
@@ -82,7 +103,9 @@ CREATE TABLE IF NOT EXISTS "AssessmentPremioFaseUm" (
   "id" VARCHAR(255) PRIMARY KEY,
   "Coment" TEXT,
   "Crietereas" TEXT[],
+  "Inscricao" TEXT,
   "Inscricao_id" VARCHAR(255),
+  "Mentor" VARCHAR(255),
   "Mentor_id" VARCHAR(255),
   "Rates" TEXT[],
   "result" NUMERIC(15, 2),
@@ -160,8 +183,10 @@ CREATE TABLE IF NOT EXISTS "Categoria" (
 CREATE TABLE IF NOT EXISTS "Centelha" (
   "id" VARCHAR(255) PRIMARY KEY,
   "anexos" TEXT[],
-  "id_submissao_centelha" VARCHAR(255),
+  "id_submissao_centelha" TEXT,
+  "resolvedor" TEXT,
   "resolvedor_id" VARCHAR(255),
+  "talento" VARCHAR(255),
   "talento_id" VARCHAR(255),
   "created_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "modified_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1595,6 +1620,7 @@ CREATE TABLE IF NOT EXISTS "Talento" (
   "Categorias_de_Interesse" TEXT[],
   "cidade" VARCHAR(255),
   "curriculo" TEXT,
+  "Empresa" VARCHAR(255),
   "Empresa_id" VARCHAR(255),
   "escolaridade" VARCHAR(255),
   "estado" VARCHAR(255),
@@ -1671,8 +1697,11 @@ CREATE TABLE IF NOT EXISTS "Time" (
   "email" VARCHAR(255),
   "Nome" VARCHAR(255),
   "papel" VARCHAR(255),
+  "proposta_nit" VARCHAR(255),
   "proposta_nit_id" VARCHAR(255),
+  "Startup" VARCHAR(255),
   "Startup_id" VARCHAR(255),
+  "usuario" VARCHAR(255),
   "usuario_id" VARCHAR(255),
   "created_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "modified_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1723,10 +1752,14 @@ CREATE TABLE IF NOT EXISTS "Values" (
   "id" VARCHAR(255) PRIMARY KEY,
   "Booleano" BOOLEAN,
   "comentario" TEXT,
+  "creterea" VARCHAR(255),
   "creterea_id" VARCHAR(255),
+  "desafio" VARCHAR(255),
   "desafio_id" VARCHAR(255),
   "inscricao_premio" VARCHAR(255),
+  "inscricaoPremioRec" VARCHAR(255),
   "inscricaoPremioRec_id" VARCHAR(255),
+  "Mentor" VARCHAR(255),
   "Mentor_id" VARCHAR(255),
   "proposta_id" VARCHAR(255),
   "proposta_eita_segunda_id" VARCHAR(255),
