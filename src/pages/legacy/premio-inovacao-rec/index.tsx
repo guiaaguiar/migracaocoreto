@@ -233,6 +233,29 @@ export default function PremioInovacaoRecPage() {
               >
                 Área do Avaliador
               </button>
+
+              <a
+                href="/legacy/premiorec-submissoes"
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  backgroundColor: '#00a8b5',
+                  color: '#ffffff',
+                  border: 'none',
+                  transition: 'all 0.2s ease',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 6px rgba(0, 168, 181, 0.3)',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#008b96')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a8b5')}
+              >
+                📊 Dashboards do Prêmio
+              </a>
             </div>
           </div>
 

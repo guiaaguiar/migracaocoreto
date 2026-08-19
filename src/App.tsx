@@ -30,10 +30,14 @@ import NitroInscricoesPage from './pages/legacy/nitro-inscricoes'
 import OportunidadesPage from './pages/legacy/oportunidades'
 import ParceriasInovadorasPage from './pages/legacy/parcerias-inovadoras'
 import PremioInovacaoRecPage from './pages/legacy/premio-inovacao-rec'
+import PremioRecSubmissoesPage from './pages/legacy/premiorec-submissoes'
+import PremioRecAvaliacoesFase1Page from './pages/legacy/premiorec-avaliacoes-fase1'
+import PremioRecAvaliacoesFase2Page from './pages/legacy/premiorec-avaliacoes-fase2'
 import QuizzDescubraSeuLugarPage from './pages/legacy/quizz-descubra_seu_lugar'
 import StartupWorldCupPage from './pages/legacy/startupworldcup'
 import StartupsEMeuEcossistemaPage from './pages/legacy/startups_e_meu_ecossistema'
 import TrilhaEitaPage from './pages/legacy/trilha-eita'
+
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -87,6 +91,13 @@ function App() {
         <Route path="/legacy/oportunidades" element={<OportunidadesPage />} />
         <Route path="/legacy/parcerias-inovadoras" element={<ParceriasInovadorasPage />} />
         <Route path="/legacy/premio-inovacao-rec" element={<PremioInovacaoRecPage />} />
+        <Route path="/legacy/premiorec-submissoes" element={<PremioRecSubmissoesPage />} />
+        <Route path="/legacy/premio-rec-submissoes" element={<PremioRecSubmissoesPage />} />
+        <Route path="/legacy/premiorec-inscricoes" element={<PremioRecSubmissoesPage />} />
+        <Route path="/legacy/premiorec-avaliacoes-fase1" element={<PremioRecAvaliacoesFase1Page />} />
+        <Route path="/legacy/premiorec-fase1" element={<PremioRecAvaliacoesFase1Page />} />
+        <Route path="/legacy/premiorec-avaliacoes-fase2" element={<PremioRecAvaliacoesFase2Page />} />
+        <Route path="/legacy/premiorec-fase2" element={<PremioRecAvaliacoesFase2Page />} />
         <Route path="/legacy/quizz-descubra_seu_lugar" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar/:slug" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/startupworldcup" element={<StartupWorldCupPage />} />
