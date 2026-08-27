@@ -8,7 +8,11 @@ import BoPage from './pages/legacy/bo'
 import CaminhosFase2Page from './pages/legacy/caminhos-fase2'
 import CompleteInscricaoPage from './pages/legacy/complete-inscricao'
 import EitaPage from './pages/legacy/eita'
+import EitaSubmissoesPage from './pages/legacy/eita-submissoes'
+import EitaAvaliacoesMentoresPage from './pages/legacy/eita-avaliacoes-mentores'
+import EitaAvaliacoesOperacaoPage from './pages/legacy/eita-avaliacoes-operacao'
 import HackerCidadaoPage from './pages/legacy/hackercidadao'
+
 import HomePage from './pages/legacy/home'
 import HomeArianoPage from './pages/legacy/home-arianov0'
 import InscricaoConexoesPage from './pages/legacy/inscricao-conexoes'
@@ -71,6 +75,15 @@ function App() {
         <Route path="/legacy/caminhos-fase2" element={<CaminhosFase2Page />} />
         <Route path="/legacy/complete-inscricao" element={<CompleteInscricaoPage />} />
         <Route path="/legacy/eita" element={<EitaPage />} />
+        <Route path="/legacy/eita-submissoes" element={<EitaSubmissoesPage />} />
+        <Route path="/legacy/eita-inscricoes" element={<EitaSubmissoesPage />} />
+        <Route path="/legacy/eita-propostas" element={<EitaSubmissoesPage />} />
+        <Route path="/legacy/eita-avaliacoes-mentores" element={<EitaAvaliacoesMentoresPage />} />
+        <Route path="/legacy/eita-avaliacoes" element={<EitaAvaliacoesMentoresPage />} />
+        <Route path="/legacy/eita-fase1" element={<EitaAvaliacoesMentoresPage />} />
+        <Route path="/legacy/eita-avaliacoes-operacao" element={<EitaAvaliacoesOperacaoPage />} />
+        <Route path="/legacy/eita-operacao" element={<EitaAvaliacoesOperacaoPage />} />
+        <Route path="/legacy/eita-fase2" element={<EitaAvaliacoesOperacaoPage />} />
         <Route path="/legacy/hackercidadao" element={<HackerCidadaoPage />} />
         <Route path="/legacy/inscricao-conexoes" element={<InscricaoConexoesPage />} />
         <Route path="/legacy/inscricao-desafio" element={<InscricaoDesafioPage />} />
@@ -88,6 +101,11 @@ function App() {
         <Route path="/legacy/netpitchv2" element={<NetpitchV2Page />} />
         <Route path="/legacy/nitro" element={<NitroPage />} />
         <Route path="/legacy/nitro-inscricoes" element={<NitroInscricoesPage />} />
+        <Route path="/legacy/nitro-submissoes" element={<NitroInscricoesPage />} />
+        <Route path="/legacy/nitro-propostas" element={<NitroInscricoesPage />} />
+        <Route path="/legacy/nitro-edital1" element={<NitroInscricoesPage />} />
+        <Route path="/legacy/nitro-edital2" element={<NitroInscricoesPage />} />
+        <Route path="/legacy/nitro-edital3" element={<NitroInscricoesPage />} />
         <Route path="/legacy/oportunidades" element={<OportunidadesPage />} />
         <Route path="/legacy/parcerias-inovadoras" element={<ParceriasInovadorasPage />} />
         <Route path="/legacy/premio-inovacao-rec" element={<PremioInovacaoRecPage />} />

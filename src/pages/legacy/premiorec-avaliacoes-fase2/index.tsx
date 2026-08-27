@@ -537,8 +537,8 @@ export default function PremioRecAvaliacoesFase2Page() {
 
                       {/* Proposal Title with Direct Link */}
                       <div style={{ marginBottom: '10px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '4px' }}>
-                          Inscrição / Proposta:
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#7E22CE', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '4px' }}>
+                          💡 Proposta Avaliada (sw_nome):
                         </span>
                         <button
                           onClick={e => {
@@ -562,13 +562,26 @@ export default function PremioRecAvaliacoesFase2Page() {
                           onMouseEnter={e => (e.currentTarget.style.color = '#7E22CE')}
                           onMouseLeave={e => (e.currentTarget.style.color = '#0F172A')}
                         >
-                          {ass.inscricao} ↗
+                          {ass.submissionTitle || ass.inscricao} ↗
                         </button>
                       </div>
 
-                      {/* Mentor */}
-                      <div style={{ fontSize: '13px', color: '#7E22CE', fontWeight: 700, marginBottom: '12px' }}>
-                        👤 {ass.mentor}
+                      {/* Submitter, Company & Mentor Box */}
+                      <div style={{ backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span>👤</span>
+                          <span><strong>Quem submeteu:</strong> {ass.pf_nome || 'Autor / Proponente'}</span>
+                        </div>
+                        {ass.Nome_fantasia && (
+                          <div style={{ fontSize: '12px', color: '#475569', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span>🏢</span>
+                            <span><strong>Empresa / Startup:</strong> {ass.Nome_fantasia}</span>
+                          </div>
+                        )}
+                        <div style={{ fontSize: '12px', color: '#7E22CE', marginTop: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span>🧑‍🏫</span>
+                          <span><strong>Mentor:</strong> {ass.mentor}</span>
+                        </div>
                       </div>
 
                       {/* Parecer Comment */}
@@ -843,14 +856,17 @@ export default function PremioRecAvaliacoesFase2Page() {
             >
               <div>
                 <span style={{ fontSize: '12px', fontWeight: 700, color: '#6B21A8', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                  Proposta Vinculada no Prêmio
+                  💡 Proposta Vinculada no Prêmio (sw_nome)
                 </span>
                 <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>
                   {selectedAssessment.submissionTitle}
                 </div>
+                <div style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>
+                  👤 <strong>Quem submeteu:</strong> {selectedAssessment.pf_nome || 'Autor / Proponente'} &nbsp;•&nbsp; 🏢 <strong>Empresa:</strong> {selectedAssessment.Nome_fantasia || selectedAssessment.submissionCategoria}
+                </div>
                 {selectedAssessment.submissionEixo && (
-                  <div style={{ fontSize: '13px', color: '#7E22CE', fontWeight: 600, marginTop: '2px' }}>
-                    Eixo: {selectedAssessment.submissionEixo}
+                  <div style={{ fontSize: '12px', color: '#7E22CE', fontWeight: 700, marginTop: '2px' }}>
+                    🏷️ Eixo: {selectedAssessment.submissionEixo}
                   </div>
                 )}
               </div>

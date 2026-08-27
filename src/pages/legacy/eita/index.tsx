@@ -423,6 +423,26 @@ export default function EitaPage() {
                 </button>
               )
             })}
+
+            <Link
+              to="/legacy/eita-submissoes"
+              style={{
+                padding: '8px 20px',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: 700,
+                backgroundColor: '#00a8b5',
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 2px 6px rgba(0, 168, 181, 0.3)',
+              }}
+            >
+              📊 Dashboards EITA
+            </Link>
           </div>
 
           {/* ───────────────────────────────────────────────────────────── */}

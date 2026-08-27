@@ -3,99 +3,109 @@ import { useSearchParams, Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
 import {
-  PREMIO_REC_SUBMISSIONS,
-  ASSESSMENTS_FASE_1,
-  ASSESSMENTS_FASE_2,
+  EITA_SUBMISSIONS,
+  EITA_MENTOR_EVALUATIONS,
+  EITA_COMMITTEE_OPERATIONS,
+  EITA_EVALUATIONS_BY_ID,
+  EITA_OPERATIONS_BY_ID,
   exportToCSV
-} from '../../../data/premioRecData'
-import type { PremioRecSubmission } from '../../../data/premioRecData'
+} from '../../../data/eitaData'
+import type { EitaSubmission } from '../../../data/eitaData'
 
-
-export default function PremioRecSubmissoesPage() {
+export default function EitaSubmissoesPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedEixo, setSelectedEixo] = useState<string>('todos')
-  const [selectedFase, setSelectedFase] = useState<string>('todos')
-  const [selectedSubmission, setSelectedSubmission] = useState<PremioRecSubmission | null>(null)
+  const [selectedDesafio, setSelectedDesafio] = useState<string>('todos')
+  const [selectedCidade, setSelectedCidade] = useState<string>('todos')
+  const [selectedSubmission, setSelectedSubmission] = useState<EitaSubmission | null>(null)
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
 
-  // Read URL query params on load or change to auto-open popup
+  // Listen to URL query parameter (?selectedId=rel_prop_0001 or ?proposal=...)
   useEffect(() => {
-    const selectedId = searchParams.get('selectedId') || searchParams.get('id')
-    const submissionTitle = searchParams.get('title') || searchParams.get('submission')
+    const selectedIdParam = searchParams.get('selectedId')
+    const proposalParam = searchParams.get('proposal') || searchParams.get('submission')
 
-    if (selectedId) {
-      const found = PREMIO_REC_SUBMISSIONS.find(s => s.id.toLowerCase() === selectedId.toLowerCase())
-      if (found) setSelectedSubmission(found)
-    } else if (submissionTitle) {
-      const norm = submissionTitle.toLowerCase().trim()
-      const found = PREMIO_REC_SUBMISSIONS.find(
-        s => s.title.toLowerCase().includes(norm) || norm.includes(s.title.toLowerCase())
+    if (selectedIdParam) {
+      const found = EITA_SUBMISSIONS.find(s => s.id.toLowerCase() === selectedIdParam.toLowerCase())
+      if (found) {
+        setSelectedSubmission(found)
+        return
+      }
+    }
+
+    if (proposalParam) {
+      const decoded = decodeURIComponent(proposalParam).trim()
+      const lowerDecoded = decoded.toLowerCase()
+      setSearchTerm(decoded)
+      const found = EITA_SUBMISSIONS.find(
+        s =>
+          s.title.toLowerCase().includes(lowerDecoded) ||
+          s.id.toLowerCase() === lowerDecoded ||
+          lowerDecoded.includes(s.title.toLowerCase()) ||
+          s.comoResolve.toLowerCase().includes(lowerDecoded)
       )
-      if (found) setSelectedSubmission(found)
+      if (found) {
+        setSelectedSubmission(found)
+      }
     }
   }, [searchParams])
 
-  // Unique Eixos
-  const eixosList = useMemo(() => {
-    const set = new Set(PREMIO_REC_SUBMISSIONS.map(s => s.eixo).filter(Boolean))
-    return ['todos', ...Array.from(set)]
+  // Desafios list for filter pills
+  const desafiosList = useMemo(() => {
+    const categories = Array.from(new Set(EITA_SUBMISSIONS.map(s => s.desafioCategory)))
+    return ['todos', ...categories]
+  }, [])
+
+  // Cidades list
+  const cidadesList = useMemo(() => {
+    const cities = Array.from(new Set(EITA_SUBMISSIONS.map(s => s.cidade).filter(Boolean)))
+    return ['todos', ...cities]
   }, [])
 
   // Filter submissions
   const filteredSubmissions = useMemo(() => {
-    return PREMIO_REC_SUBMISSIONS.filter(sub => {
-      // Search term
+    return EITA_SUBMISSIONS.filter(sub => {
       const matchesSearch =
         !searchTerm ||
         sub.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.eixo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
         sub.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.q11Clean.toLowerCase().includes(searchTerm.toLowerCase())
+        sub.comoResolve.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sub.desafio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (sub.CNPJ && sub.CNPJ.includes(searchTerm)) ||
+        sub.cidade.toLowerCase().includes(searchTerm.toLowerCase())
 
-      // Eixo filter
-      const matchesEixo = selectedEixo === 'todos' || sub.eixo === selectedEixo
+      const matchesDesafio = selectedDesafio === 'todos' || sub.desafioCategory === selectedDesafio
+      const matchesCidade = selectedCidade === 'todos' || sub.cidade === selectedCidade
 
-      // Fase filter
-      let matchesFase = true
-      if (selectedFase === 'fase1') matchesFase = sub.primeiraFase === true
-      else if (selectedFase === 'fase2') matchesFase = sub.segundaFase === true
-      else if (selectedFase === 'duplicadas') matchesFase = sub.duplicada === true
-      else if (selectedFase === 'avaliadas') matchesFase = sub.assessmentFase1Ids.length > 0 || sub.assessmentFase2Ids.length > 0
-
-      return matchesSearch && matchesEixo && matchesFase
+      return matchesSearch && matchesDesafio && matchesCidade
     })
-  }, [searchTerm, selectedEixo, selectedFase])
+  }, [searchTerm, selectedDesafio, selectedCidade])
 
   // Metrics
-  const totalSubmissoes = PREMIO_REC_SUBMISSIONS.length
-  const totalFase1 = PREMIO_REC_SUBMISSIONS.filter(s => s.primeiraFase).length
-  const totalFase2 = PREMIO_REC_SUBMISSIONS.filter(s => s.segundaFase).length
-  const totalAvaliadas = PREMIO_REC_SUBMISSIONS.filter(s => s.assessmentFase1Ids.length > 0 || s.assessmentFase2Ids.length > 0).length
+  const totalSubmissoes = EITA_SUBMISSIONS.length
+  const totalDesafios = new Set(EITA_SUBMISSIONS.map(s => s.desafio)).size
+  const totalCidades = new Set(EITA_SUBMISSIONS.map(s => s.cidade)).size
+  const comAvaliacoes = EITA_SUBMISSIONS.filter(s => s.evaluationIds.length > 0 || s.operationIds.length > 0).length
 
   // CSV column mapping
   const csvColumnMap = {
-    id: 'ID',
-    title: 'Título da Proposta',
-    eixo: 'Eixo Temático',
-    categoria: 'Categoria',
-    primeiraFase: 'Classificado 1ª Fase',
-    segundaFase: 'Classificado 2ª Fase',
-    duplicada: 'Duplicada',
-    q10: 'Q10 (Categoria Declarada)',
-    q11Clean: 'Q11 (Problema e Solução)',
-    q12Clean: 'Q12 (Entregas e Resultados)',
-    q13Clean: 'Q13 (Escalabilidade)',
-    slug: 'Slug'
+    id: 'ID da Submissão',
+    title: 'Título da Proposta / Solução',
+    desafioCategory: 'Eixo do Desafio',
+    desafio: 'Desafio Público',
+    cidade: 'Cidade',
+    CNPJ: 'CNPJ',
+    comoResolve: 'Descrição do Problema e Solução',
+    dataCadastro: 'Data de Cadastro',
+    documentos: 'Links de Documentos Anexos'
   }
 
-  const handleOpenDetails = (sub: PremioRecSubmission) => {
+  const handleOpenModal = (sub: EitaSubmission) => {
     setSelectedSubmission(sub)
     setSearchParams({ selectedId: sub.id })
   }
 
-  const handleCloseDetails = () => {
+  const handleCloseModal = () => {
     setSelectedSubmission(null)
     setSearchParams({})
   }
@@ -107,10 +117,10 @@ export default function PremioRecSubmissoesPage() {
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
 
-          {/* ── Sub-Navigation Tabs between Dashboards ── */}
+          {/* ── Sub-Navigation Tabs between EITA Dashboards ── */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <Link
-              to="/legacy/premiorec-submissoes"
+              to="/legacy/eita-submissoes"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -122,14 +132,14 @@ export default function PremioRecSubmissoesPage() {
                 backgroundColor: '#00a8b5',
                 color: '#FFFFFF',
                 textDecoration: 'none',
-                boxShadow: '0 2px 8px rgba(0, 168, 181, 0.25)',
+                boxShadow: '0 2px 8px rgba(0, 168, 181, 0.3)',
               }}
             >
-              <span>📋 Submissões ({totalSubmissoes})</span>
+              <span>📋 Submissões EITA ({totalSubmissoes})</span>
             </Link>
 
             <Link
-              to="/legacy/premiorec-avaliacoes-fase1"
+              to="/legacy/eita-avaliacoes-mentores"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -144,11 +154,11 @@ export default function PremioRecSubmissoesPage() {
                 textDecoration: 'none',
               }}
             >
-              <span>🔍 Avaliações 1ª Fase (107)</span>
+              <span>🔍 Avaliações dos Mentores ({EITA_MENTOR_EVALUATIONS.length})</span>
             </Link>
 
             <Link
-              to="/legacy/premiorec-avaliacoes-fase2"
+              to="/legacy/eita-avaliacoes-operacao"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -163,11 +173,31 @@ export default function PremioRecSubmissoesPage() {
                 textDecoration: 'none',
               }}
             >
-              <span>🏆 Avaliações 2ª Fase (266)</span>
+              <span>🏆 Consolidação & Operação ({EITA_COMMITTEE_OPERATIONS.length})</span>
+            </Link>
+
+            <Link
+              to="/legacy/eita"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                borderRadius: '30px',
+                fontSize: '14px',
+                fontWeight: 700,
+                backgroundColor: '#FFFFFF',
+                color: '#64748B',
+                border: '1px solid #CBD5E1',
+                textDecoration: 'none',
+                marginLeft: 'auto',
+              }}
+            >
+              <span>← Portal Oficial E.I.T.A!</span>
             </Link>
           </div>
 
-          {/* ── Top Hero Card (Dashboard Submissões Prêmio Recife) ── */}
+          {/* ── Top Hero Card (Design System Nitro/Premio) ── */}
           <div
             style={{
               position: 'relative',
@@ -180,6 +210,7 @@ export default function PremioRecSubmissoesPage() {
               marginBottom: '32px',
             }}
           >
+            {/* Decorative circles */}
             <div
               style={{
                 position: 'absolute',
@@ -207,20 +238,20 @@ export default function PremioRecSubmissoesPage() {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px', marginBottom: '28px' }}>
               <div>
-                <span style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#38bdf8', display: 'block', marginBottom: '6px' }}>
-                  Painel Oficial • Prêmio Recife de Inovação
+                <span style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#00e5ff', display: 'block', marginBottom: '6px' }}>
+                  Painel de Gestão e Acompanhamento • 3º Ciclo de Inovação Aberta
                 </span>
                 <h1 style={{ fontSize: '32px', fontWeight: 900, margin: 0, letterSpacing: '-0.02em' }}>
-                  Submissões do Prêmio Rec
+                  Submissões do e.i.t.a! Recife
                 </h1>
-                <p style={{ fontSize: '15px', color: '#E2E8F0', margin: '8px 0 0 0', maxWidth: '650px', lineHeight: 1.5 }}>
-                  Consulte todas as propostas submetidas, filtre por eixos temáticos e fases de classificação, e visualize os pareceres de avaliação vinculados.
+                <p style={{ fontSize: '15px', color: '#E2E8F0', margin: '8px 0 0 0', maxWidth: '680px', lineHeight: 1.5 }}>
+                  Consulte todas as propostas submetidas aos desafios públicos da Prefeitura do Recife, com soluções propostas, anexos e pareceres técnicos de avaliação.
                 </p>
               </div>
 
-              {/* Header Action: Export CSV */}
+              {/* Export All CSV Button */}
               <button
-                onClick={() => exportToCSV('submissoes_premio_recife_todas', filteredSubmissions, csvColumnMap)}
+                onClick={() => exportToCSV('submissoes_eita_recife', filteredSubmissions, csvColumnMap)}
                 style={{
                   backgroundColor: '#00a8b5',
                   color: '#FFFFFF',
@@ -234,7 +265,6 @@ export default function PremioRecSubmissoesPage() {
                   alignItems: 'center',
                   gap: '8px',
                   boxShadow: '0 4px 12px rgba(0, 168, 181, 0.3)',
-                  transition: 'all 0.2s ease',
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -260,44 +290,43 @@ export default function PremioRecSubmissoesPage() {
 
               <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
                 <div style={{ fontSize: '38px', fontWeight: 900, color: '#0F172A', lineHeight: 1, marginBottom: '8px' }}>
-                  {totalFase1}
+                  {totalDesafios}
                 </div>
                 <div style={{ fontSize: '14px', fontWeight: 700, color: '#0284c7' }}>
-                  Classificadas 1ª Fase
+                  Desafios Públicos
                 </div>
               </div>
 
               <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
                 <div style={{ fontSize: '38px', fontWeight: 900, color: '#0F172A', lineHeight: 1, marginBottom: '8px' }}>
-                  {totalFase2}
-                </div>
-                <div style={{ fontSize: '14px', fontWeight: 700, color: '#10b981' }}>
-                  Classificadas 2ª Fase
-                </div>
-              </div>
-
-              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-                <div style={{ fontSize: '38px', fontWeight: 900, color: '#0F172A', lineHeight: 1, marginBottom: '8px' }}>
-                  {totalAvaliadas}
+                  {totalCidades}
                 </div>
                 <div style={{ fontSize: '14px', fontWeight: 700, color: '#8b5cf6' }}>
+                  Cidades Participantes
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+                <div style={{ fontSize: '38px', fontWeight: 900, color: '#0F172A', lineHeight: 1, marginBottom: '8px' }}>
+                  {comAvaliacoes}
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 700, color: '#10b981' }}>
                   Com Avaliações
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ── Filters and Search Bar Section ── */}
+          {/* ── Search and Filter Controls ── */}
           <div style={{ backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '24px', border: '1px solid #E2E8F0', marginBottom: '28px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Search input and View Mode toggle */}
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <div style={{ position: 'relative', flex: 1 }}>
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Pesquisar por título, ID, categoria, palavras do problema ou solução..."
+                    placeholder="Pesquisar por título da solução, ID, cidade, CNPJ ou palavras do problema/solução..."
                     style={{
                       width: '100%',
                       padding: '14px 16px 14px 44px',
@@ -395,59 +424,54 @@ export default function PremioRecSubmissoesPage() {
                 </div>
               </div>
 
-              {/* Filter Pills: Eixos and Phases */}
+              {/* Desafio Filter Pills */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 700, color: '#64748B', marginRight: '4px' }}>
-                  Fases:
+                  Desafio:
                 </span>
-                {[
-                  { id: 'todos', label: 'Todas' },
-                  { id: 'fase1', label: '1ª Fase Classificadas' },
-                  { id: 'fase2', label: '2ª Fase Finalistas' },
-                  { id: 'avaliadas', label: 'Com Avaliações' },
-                  { id: 'duplicadas', label: 'Duplicadas' },
-                ].map(f => (
+                {desafiosList.map(des => (
                   <button
-                    key={f.id}
-                    onClick={() => setSelectedFase(f.id)}
+                    key={des}
+                    onClick={() => setSelectedDesafio(des)}
                     style={{
                       padding: '6px 14px',
                       borderRadius: '20px',
                       fontSize: '13px',
-                      fontWeight: selectedFase === f.id ? 700 : 500,
-                      backgroundColor: selectedFase === f.id ? '#00a8b5' : '#F1F5F9',
-                      color: selectedFase === f.id ? '#FFFFFF' : '#334155',
+                      fontWeight: selectedDesafio === des ? 700 : 500,
+                      backgroundColor: selectedDesafio === des ? '#00a8b5' : '#F1F5F9',
+                      color: selectedDesafio === des ? '#FFFFFF' : '#334155',
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    {f.label}
+                    {des === 'todos' ? 'Todos os Desafios' : des}
                   </button>
                 ))}
               </div>
 
+              {/* Cidade Filter Pills */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 700, color: '#64748B', marginRight: '4px' }}>
-                  Eixos:
+                  Cidade:
                 </span>
-                {eixosList.map(eixo => (
+                {cidadesList.slice(0, 10).map(cid => (
                   <button
-                    key={eixo}
-                    onClick={() => setSelectedEixo(eixo)}
+                    key={cid}
+                    onClick={() => setSelectedCidade(cid)}
                     style={{
-                      padding: '6px 14px',
-                      borderRadius: '20px',
-                      fontSize: '13px',
-                      fontWeight: selectedEixo === eixo ? 700 : 500,
-                      backgroundColor: selectedEixo === eixo ? '#0284c7' : '#F1F5F9',
-                      color: selectedEixo === eixo ? '#FFFFFF' : '#334155',
-                      border: 'none',
+                      padding: '4px 12px',
+                      borderRadius: '16px',
+                      fontSize: '12px',
+                      fontWeight: selectedCidade === cid ? 700 : 500,
+                      backgroundColor: selectedCidade === cid ? '#0284c7' : '#F8FAFC',
+                      color: selectedCidade === cid ? '#FFFFFF' : '#475569',
+                      border: '1px solid #E2E8F0',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    {eixo === 'todos' ? 'Todos os Eixos' : eixo}
+                    {cid === 'todos' ? 'Todas as Cidades' : cid}
                   </button>
                 ))}
               </div>
@@ -468,10 +492,10 @@ export default function PremioRecSubmissoesPage() {
                 Nenhuma submissão encontrada
               </h3>
               <p style={{ fontSize: '14px', color: '#64748B', margin: '0 0 20px 0' }}>
-                Tente ajustar os termos de pesquisa ou remover os filtros aplicados.
+                Tente ajustar os filtros ou termos de pesquisa.
               </p>
               <button
-                onClick={() => { setSearchTerm(''); setSelectedEixo('todos'); setSelectedFase('todos'); }}
+                onClick={() => { setSearchTerm(''); setSelectedDesafio('todos'); setSelectedCidade('todos'); }}
                 style={{
                   backgroundColor: '#00a8b5',
                   color: '#FFFFFF',
@@ -487,12 +511,12 @@ export default function PremioRecSubmissoesPage() {
               </button>
             </div>
           ) : viewMode === 'cards' ? (
-            /* ── Grid of Cards ── */
+            /* ── Cards Grid ── */
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '20px' }}>
               {filteredSubmissions.map(sub => (
                 <div
                   key={sub.id}
-                  onClick={() => handleOpenDetails(sub)}
+                  onClick={() => handleOpenModal(sub)}
                   style={{
                     backgroundColor: '#FFFFFF',
                     borderRadius: '16px',
@@ -507,7 +531,7 @@ export default function PremioRecSubmissoesPage() {
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-2px)'
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 168, 181, 0.12)'
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 168, 181, 0.15)'
                     e.currentTarget.style.borderColor = '#00a8b5'
                   }}
                   onMouseLeave={e => {
@@ -517,35 +541,20 @@ export default function PremioRecSubmissoesPage() {
                   }}
                 >
                   <div>
-                    {/* Badges Header */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '8px', flexWrap: 'wrap' }}>
+                    {/* Header Tags */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '8px' }}>
                       <span style={{ backgroundColor: '#F1F5F9', color: '#475569', fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '12px' }}>
                         {sub.id}
                       </span>
-
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {sub.primeiraFase && (
-                          <span style={{ backgroundColor: '#E0F2FE', color: '#0284C7', fontSize: '11px', fontWeight: 700, padding: '4px 8px', borderRadius: '12px' }}>
-                            1ª Fase
-                          </span>
-                        )}
-                        {sub.segundaFase && (
-                          <span style={{ backgroundColor: '#DCFCE7', color: '#16A34A', fontSize: '11px', fontWeight: 700, padding: '4px 8px', borderRadius: '12px' }}>
-                            2ª Fase
-                          </span>
-                        )}
-                        {sub.duplicada && (
-                          <span style={{ backgroundColor: '#FEE2E2', color: '#DC2626', fontSize: '11px', fontWeight: 700, padding: '4px 8px', borderRadius: '12px' }}>
-                            Duplicada
-                          </span>
-                        )}
-                      </div>
+                      <span style={{ backgroundColor: '#E0F2FE', color: '#0369A1', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '12px' }}>
+                        📍 {sub.cidade}
+                      </span>
                     </div>
 
                     {/* 1. Nome do Projeto / Solução (sw_nome) */}
                     <div style={{ marginBottom: '8px' }}>
                       <span style={{ fontSize: '11px', fontWeight: 700, color: '#00a8b5', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '2px' }}>
-                        💡 Projeto / Iniciativa (sw_nome):
+                        💡 Projeto / Solução (sw_nome):
                       </span>
                       <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#0F172A', margin: 0, lineHeight: 1.35 }}>
                         {sub.sw_nome || sub.title}
@@ -556,37 +565,43 @@ export default function PremioRecSubmissoesPage() {
                     <div style={{ backgroundColor: '#F8FAFC', padding: '10px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
                       <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>👤</span>
-                        <span><strong>Quem submeteu:</strong> {sub.pf_nome || sub.Resp_nome || sub.q10}</span>
+                        <span><strong>Quem submeteu:</strong> {sub.pf_nome || sub.Resp_nome}</span>
                       </div>
                       <div style={{ fontSize: '12px', color: '#475569', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>🏢</span>
-                        <span><strong>Empresa / Startup:</strong> {sub.Nome_fantasia || sub.categoria}</span>
+                        <span><strong>Empresa / Startup:</strong> {sub.Nome_fantasia}</span>
                       </div>
-                      <div style={{ fontSize: '12px', color: '#00a8b5', marginTop: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span>🏷️</span>
-                        <span>Eixo: {sub.eixo} {sub.categoria && sub.categoria !== sub.eixo ? `• Cat: ${sub.categoria}` : ''}</span>
+                      <div style={{ fontSize: '11px', color: '#64748B', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span>📍</span>
+                        <span>{sub.cidade} • Desafio: {sub.desafioCategory}</span>
                       </div>
                     </div>
 
-                    {/* Resumo snippet */}
-                    {sub.q11Clean && (
-                      <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 16px 0', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {sub.q11Clean}
-                      </p>
-                    )}
+                    {/* Problem/Solution Excerpt */}
+                    <p style={{ fontSize: '13px', color: '#64748B', lineHeight: 1.5, margin: '0 0 16px 0', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {sub.comoResolve || 'Sem descrição textual detalhada.'}
+                    </p>
                   </div>
 
-                  {/* Footer with Assessment Count and Button */}
-                  <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '16px', marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: '#64748B' }}>
-                      <span>🔍 F1: <strong>{sub.assessmentFase1Ids.length}</strong></span>
-                      <span>🏆 F2: <strong>{sub.assessmentFase2Ids.length}</strong></span>
+                  {/* Footer Stats and Action */}
+                  <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {sub.documentos.length > 0 && (
+                        <span style={{ backgroundColor: '#F8FAFC', color: '#475569', fontSize: '11px', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                          📎 {sub.documentos.length} anexo{sub.documentos.length > 1 ? 's' : ''}
+                        </span>
+                      )}
+                      {(sub.evaluationIds.length > 0 || sub.operationIds.length > 0) && (
+                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '6px' }}>
+                          ⭐️ Avaliada
+                        </span>
+                      )}
                     </div>
 
                     <button
                       onClick={e => {
                         e.stopPropagation()
-                        handleOpenDetails(sub)
+                        handleOpenModal(sub)
                       }}
                       style={{
                         backgroundColor: '#00a8b5',
@@ -597,7 +612,6 @@ export default function PremioRecSubmissoesPage() {
                         fontSize: '13px',
                         fontWeight: 700,
                         cursor: 'pointer',
-                        whiteSpace: 'nowrap',
                         boxShadow: '0 2px 4px rgba(0, 168, 181, 0.2)',
                       }}
                     >
@@ -614,10 +628,10 @@ export default function PremioRecSubmissoesPage() {
                 <thead>
                   <tr style={{ borderBottom: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}>
                     <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '10%' }}>ID</th>
-                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '35%' }}>Título da Proposta</th>
-                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '20%' }}>Eixo</th>
-                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '15%' }}>Status</th>
-                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '10%' }}>Avaliações</th>
+                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '30%' }}>Proposta / Solução</th>
+                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '25%' }}>Desafio Público</th>
+                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '15%' }}>Cidade</th>
+                    <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', width: '10%' }}>Anexos</th>
                     <th style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#475569', textAlign: 'right', width: '10%' }}></th>
                   </tr>
                 </thead>
@@ -626,27 +640,20 @@ export default function PremioRecSubmissoesPage() {
                     <tr
                       key={sub.id}
                       style={{ borderBottom: '1px solid #F1F5F9', cursor: 'pointer' }}
-                      onClick={() => handleOpenDetails(sub)}
+                      onClick={() => handleOpenModal(sub)}
                       onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#F8FAFC')}
                       onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
                     >
                       <td style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 700, color: '#64748B' }}>{sub.id}</td>
-                      <td style={{ padding: '16px 20px', fontSize: '14px', color: '#0F172A', fontWeight: 600 }}>{sub.title}</td>
-                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#00a8b5', fontWeight: 600 }}>{sub.eixo}</td>
-                      <td style={{ padding: '16px 20px' }}>
-                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                          {sub.primeiraFase && <span style={{ backgroundColor: '#E0F2FE', color: '#0284C7', fontSize: '11px', fontWeight: 700, padding: '2px 6px', borderRadius: '10px' }}>1ª Fase</span>}
-                          {sub.segundaFase && <span style={{ backgroundColor: '#DCFCE7', color: '#16A34A', fontSize: '11px', fontWeight: 700, padding: '2px 6px', borderRadius: '10px' }}>2ª Fase</span>}
-                        </div>
-                      </td>
-                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#475569' }}>
-                        {sub.assessmentFase1Ids.length + sub.assessmentFase2Ids.length} ({sub.assessmentFase1Ids.length} F1 / {sub.assessmentFase2Ids.length} F2)
-                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: '#0F172A' }}>{sub.title}</td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#00a8b5', fontWeight: 600 }}>{sub.desafioCategory}</td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#475569' }}>{sub.cidade}</td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#475569' }}>{sub.documentos.length} anexo{sub.documentos.length > 1 ? 's' : ''}</td>
                       <td style={{ padding: '16px 20px', textAlign: 'right' }}>
                         <button
                           onClick={e => {
                             e.stopPropagation()
-                            handleOpenDetails(sub)
+                            handleOpenModal(sub)
                           }}
                           style={{
                             backgroundColor: '#00a8b5',
@@ -672,7 +679,7 @@ export default function PremioRecSubmissoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "VER DETALHES DA SUBMISSÃO" ── */}
+      {/* ── MODAL "DETALHES DA SUBMISSÃO EITA" ── */}
       {selectedSubmission && (
         <div
           style={{
@@ -685,7 +692,7 @@ export default function PremioRecSubmissoesPage() {
             zIndex: 9999,
             padding: '24px',
           }}
-          onClick={handleCloseDetails}
+          onClick={handleCloseModal}
         >
           <div
             style={{
@@ -706,7 +713,7 @@ export default function PremioRecSubmissoesPage() {
           >
             {/* Close Button */}
             <button
-              onClick={handleCloseDetails}
+              onClick={handleCloseModal}
               style={{
                 position: 'absolute',
                 top: '20px',
@@ -721,9 +728,9 @@ export default function PremioRecSubmissoesPage() {
               ✕
             </button>
 
-            {/* Top Bar: Export Individual CSV */}
+            {/* Top CSV Button */}
             <button
-              onClick={() => exportToCSV(`submissao_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
+              onClick={() => exportToCSV(`submissao_eita_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
               style={{
                 width: '100%',
                 border: '1.5px solid #00a8b5',
@@ -745,186 +752,162 @@ export default function PremioRecSubmissoesPage() {
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              <span>Exportar Dados da Proposta em CSV</span>
+              <span>Exportar Dados da Submissão em CSV</span>
             </button>
 
-            {/* Modal Title */}
+            {/* Modal Title & Identification */}
             <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ backgroundColor: '#0284c7', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <span style={{ backgroundColor: '#022340', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
                   {selectedSubmission.id}
                 </span>
-                <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>
-                  Slug: {selectedSubmission.slug}
+                <span style={{ backgroundColor: '#E0F2FE', color: '#0369A1', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
+                  📍 {selectedSubmission.cidade}
                 </span>
+                {selectedSubmission.CNPJ && (
+                  <span style={{ backgroundColor: '#F1F5F9', color: '#475569', fontSize: '12px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px' }}>
+                    CNPJ: {selectedSubmission.CNPJ}
+                  </span>
+                )}
+                {selectedSubmission.dataCadastro && (
+                  <span style={{ fontSize: '12px', color: '#64748B' }}>
+                    📅 {selectedSubmission.dataCadastro}
+                  </span>
+                )}
               </div>
               <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
                 {selectedSubmission.title}
               </h2>
-            </div>
 
-            {/* ── Section: Identificação da Proposta ── */}
-            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '12px', padding: '20px', border: '1px solid #E2E8F0' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 16px 0' }}>
-                📌 Identificação e Classificação
-              </h3>
+              {/* Submitter & Company Details Box */}
+              <div style={{ backgroundColor: '#F8FAFC', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                <div>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                    👤 Quem Submeteu / Autor (pf_nome / Resp_nome):
+                  </span>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
+                    {selectedSubmission.pf_nome || selectedSubmission.Resp_nome}
+                  </div>
+                </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                <div style={{ gridColumn: '1 / -1', backgroundColor: '#FFFFFF', padding: '14px 18px', borderRadius: '8px', border: '1px solid #CBD5E1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                <div>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                    🏢 Empresa / Startup (Nome_fantasia):
+                  </span>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
+                    {selectedSubmission.Nome_fantasia}
+                  </div>
+                </div>
+
+                <div>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                    📍 Localização / Cidade:
+                  </span>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
+                    {selectedSubmission.cidade}
+                  </div>
+                </div>
+
+                {selectedSubmission.CNPJ && (
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '2px', textTransform: 'uppercase' }}>
-                      👤 Quem Submeteu / Autor (pf_nome / Resp_nome):
-                    </label>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                      {selectedSubmission.pf_nome || selectedSubmission.Resp_nome || selectedSubmission.q10}
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                      📄 CNPJ Registrado:
+                    </span>
+                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857' }}>
+                      {selectedSubmission.CNPJ}
                     </div>
                   </div>
+                )}
+              </div>
 
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '2px', textTransform: 'uppercase' }}>
-                      🏢 Empresa / Startup (Nome_fantasia):
-                    </label>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                      {selectedSubmission.Nome_fantasia || selectedSubmission.categoria}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Eixo Temático:
-                  </label>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#00a8b5' }}>
-                    {selectedSubmission.eixo}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Categoria Declarada (Q10):
-                  </label>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#334155' }}>
-                    {selectedSubmission.categoria || '-'}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Classificação 1ª Fase:
-                  </label>
-                  <span style={{ backgroundColor: selectedSubmission.primeiraFase ? '#DCFCE7' : '#F1F5F9', color: selectedSubmission.primeiraFase ? '#16A34A' : '#64748B', fontSize: '13px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
-                    {selectedSubmission.primeiraFase ? 'Sim (Classificada)' : 'Não'}
-                  </span>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Classificação 2ª Fase:
-                  </label>
-                  <span style={{ backgroundColor: selectedSubmission.segundaFase ? '#DCFCE7' : '#F1F5F9', color: selectedSubmission.segundaFase ? '#16A34A' : '#64748B', fontSize: '13px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
-                    {selectedSubmission.segundaFase ? 'Sim (Finalista)' : 'Não'}
-                  </span>
-                </div>
+              <div style={{ backgroundColor: '#F0FDFA', border: '1px solid #CCFBF1', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: '#0F766E', fontWeight: 600 }}>
+                🎯 <strong>Desafio Público Vinculado:</strong> {selectedSubmission.desafio}
               </div>
             </div>
 
-            {/* ── Section: Q11 - Problema e Solução ── */}
+            {/* ── Problema e Solução Proposta ── */}
             <div>
-              <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                💡 1. Problema e Solução Proposta (Q11)
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
+                💡 Problema e Solução Proposta
               </h3>
-              <div
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1.5px solid #00a8b5',
-                  borderRadius: '10px',
-                  padding: '16px 20px',
-                  fontSize: '14px',
-                  lineHeight: 1.7,
-                  color: '#1E293B',
-                  whiteSpace: 'pre-line',
-                }}
-              >
-                {selectedSubmission.q11Clean || 'Não preenchido.'}
+              <div style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', lineHeight: 1.7, color: '#1E293B', whiteSpace: 'pre-line' }}>
+                {selectedSubmission.comoResolve || 'Nenhum detalhe textual registrado.'}
               </div>
             </div>
 
-            {/* ── Section: Q12 - Resultados Esperados ── */}
-            {selectedSubmission.q12Clean && (
+            {/* ── Documentos e Anexos ── */}
+            {selectedSubmission.documentos.length > 0 && (
               <div>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                  📈 2. Resultados Esperados, Entregas e Validação (Q12)
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
+                  📎 Documentos e Anexos Submetidos ({selectedSubmission.documentos.length})
                 </h3>
-                <div
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1.5px solid #00a8b5',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    fontSize: '14px',
-                    lineHeight: 1.7,
-                    color: '#1E293B',
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {selectedSubmission.q12Clean}
-                </div>
-              </div>
-            )}
-
-            {/* ── Section: Q13 - Escalabilidade ── */}
-            {selectedSubmission.q13Clean && (
-              <div>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                  🚀 3. Escalabilidade e Replicabilidade (Q13)
-                </h3>
-                <div
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1.5px solid #00a8b5',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    fontSize: '14px',
-                    lineHeight: 1.7,
-                    color: '#1E293B',
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {selectedSubmission.q13Clean}
-                </div>
-              </div>
-            )}
-
-            {/* ── Section: Avaliações Vinculadas da 1ª Fase ── */}
-            {selectedSubmission.assessmentFase1Ids.length > 0 && (
-              <div style={{ backgroundColor: '#F0FDF4', borderRadius: '12px', padding: '20px', border: '1px solid #BBF7D0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#166534', margin: 0 }}>
-                    🔍 Avaliações Recebidas na 1ª Fase ({selectedSubmission.assessmentFase1Ids.length})
-                  </h3>
-                  <Link
-                    to={`/legacy/premiorec-avaliacoes-fase1?search=${encodeURIComponent(selectedSubmission.title)}`}
-                    style={{ fontSize: '13px', fontWeight: 700, color: '#15803D', textDecoration: 'none' }}
-                  >
-                    Ver na página da 1ª Fase →
-                  </Link>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {selectedSubmission.assessmentFase1Ids.map(f1Id => {
-                    const f1 = ASSESSMENTS_FASE_1.find(a => a.id === f1Id)
-                    if (!f1) return null
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {selectedSubmission.documentos.map((doc, idx) => {
+                    const decodedName = decodeURIComponent(doc.split('/').pop() || `Anexo ${idx + 1}`)
+                    const fullUrl = doc.startsWith('http') ? doc : `https:${doc}`
                     return (
-                      <div key={f1.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '14px 16px', border: '1px solid #DCFCE7' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 700, color: '#15803D' }}>
-                            👤 Mentor: {f1.mentor}
-                          </span>
-                          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>{f1.id}</span>
+                      <a
+                        key={idx}
+                        href={fullUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          backgroundColor: '#F8FAFC',
+                          border: '1px solid #CBD5E1',
+                          borderRadius: '8px',
+                          color: '#0284c7',
+                          textDecoration: 'none',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        <span>📄 {decodedName}</span>
+                        <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>Visualizar / Baixar ↗</span>
+                      </a>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── Avaliações dos Mentores Vinculadas ── */}
+            {selectedSubmission.evaluationIds.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
+                  🔍 Avaliações dos Mentores ({selectedSubmission.evaluationIds.length})
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedSubmission.evaluationIds.map(evId => {
+                    const ev = EITA_EVALUATIONS_BY_ID[evId]
+                    if (!ev) return null
+                    return (
+                      <div key={evId} style={{ backgroundColor: '#F0F9FF', border: '1px solid #BAE6FD', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                        <div>
+                          <div style={{ fontSize: '14px', fontWeight: 800, color: '#0369A1' }}>
+                            👤 Mentor: {ev.mentor}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
+                            {ev.desafioCategory} • {ev.createdDate || 'Data não registrada'}
+                          </div>
                         </div>
-                        <p style={{ fontSize: '13px', color: '#334155', margin: 0, lineHeight: 1.5 }}>
-                          {f1.comentarioClean || 'Sem comentário adicional.'}
-                        </p>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                          {ev.propostaScore !== null && (
+                            <span style={{ backgroundColor: '#FFFFFF', color: '#0284c7', border: '1px solid #BAE6FD', fontSize: '13px', fontWeight: 900, padding: '4px 10px', borderRadius: '12px' }}>
+                              Score: {ev.propostaScore.toFixed(2)} ⭐️
+                            </span>
+                          )}
+                          <Link
+                            to={`/legacy/eita-avaliacoes-mentores?search=${encodeURIComponent(ev.id)}`}
+                            style={{ fontSize: '12px', color: '#0284c7', fontWeight: 700, textDecoration: 'none' }}
+                          >
+                            Ver no Painel ↗
+                          </Link>
+                        </div>
                       </div>
                     )
                   })}
@@ -932,40 +915,33 @@ export default function PremioRecSubmissoesPage() {
               </div>
             )}
 
-            {/* ── Section: Avaliações Vinculadas da 2ª Fase ── */}
-            {selectedSubmission.assessmentFase2Ids.length > 0 && (
-              <div style={{ backgroundColor: '#FAF5FF', borderRadius: '12px', padding: '20px', border: '1px solid #E9D5FF' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#6B21A8', margin: 0 }}>
-                    🏆 Avaliações Recebidas na 2ª Fase ({selectedSubmission.assessmentFase2Ids.length})
-                  </h3>
-                  <Link
-                    to={`/legacy/premiorec-avaliacoes-fase2?search=${encodeURIComponent(selectedSubmission.title)}`}
-                    style={{ fontSize: '13px', fontWeight: 700, color: '#7E22CE', textDecoration: 'none' }}
-                  >
-                    Ver na página da 2ª Fase →
-                  </Link>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {selectedSubmission.assessmentFase2Ids.map(f2Id => {
-                    const f2 = ASSESSMENTS_FASE_2.find(a => a.id === f2Id)
-                    if (!f2) return null
+            {/* ── Memória de Cálculo da Banca ── */}
+            {selectedSubmission.operationIds.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
+                  🏆 Memória de Cálculo e Nota Consolidada da Banca ({selectedSubmission.operationIds.length})
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedSubmission.operationIds.map(opId => {
+                    const op = EITA_OPERATIONS_BY_ID[opId]
+                    if (!op) return null
                     return (
-                      <div key={f2.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '14px 16px', border: '1px solid #F3E8FF' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 700, color: '#7E22CE' }}>
-                            👤 Mentor: {f2.mentor}
+                      <div key={opId} style={{ backgroundColor: '#FAF5FF', border: '1px solid #E9D5FF', borderRadius: '8px', padding: '16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                          <span style={{ fontSize: '13px', fontWeight: 800, color: '#7E22CE' }}>
+                            Registro: {op.id}
                           </span>
-                          {f2.result !== null && (
-                            <span style={{ backgroundColor: '#7E22CE', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '3px 10px', borderRadius: '12px' }}>
-                              Nota: {f2.result.toFixed(2)} ⭐️
+                          {op.notaFinal !== null && (
+                            <span style={{ backgroundColor: '#7E22CE', color: '#FFFFFF', fontSize: '14px', fontWeight: 900, padding: '4px 12px', borderRadius: '12px' }}>
+                              Nota Final: {op.notaFinal.toFixed(2)} ⭐️
                             </span>
                           )}
                         </div>
-                        <p style={{ fontSize: '13px', color: '#334155', margin: 0, lineHeight: 1.5 }}>
-                          {f2.comentarioClean || 'Sem comentário adicional.'}
-                        </p>
+                        {op.criteriosENota && (
+                          <div style={{ backgroundColor: '#FFFFFF', padding: '12px', borderRadius: '6px', border: '1px solid #E9D5FF', fontSize: '12px', color: '#334155', whiteSpace: 'pre-line', lineHeight: 1.6, maxHeight: '160px', overflowY: 'auto' }}>
+                            {op.criteriosENota}
+                          </div>
+                        )}
                       </div>
                     )
                   })}
@@ -973,16 +949,16 @@ export default function PremioRecSubmissoesPage() {
               </div>
             )}
 
-            {/* Bottom Close Button */}
-            <div style={{ marginTop: '12px', textAlign: 'right' }}>
+            {/* Close Button Footer */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
               <button
-                onClick={handleCloseDetails}
+                onClick={handleCloseModal}
                 style={{
                   backgroundColor: '#00a8b5',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '12px 32px',
+                  padding: '10px 28px',
                   fontSize: '14px',
                   fontWeight: 700,
                   cursor: 'pointer',

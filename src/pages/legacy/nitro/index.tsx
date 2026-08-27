@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
 import bannerNitro from '../../../assets/banner-nitro.png'
@@ -184,6 +185,24 @@ export default function NitroPage() {
                   isActive={activeTab === 'cronograma'}
                   onClick={() => setActiveTab('cronograma')}
                 />
+                <Link
+                  to="/legacy/nitro-inscricoes"
+                  style={{
+                    padding: '8px 20px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    backgroundColor: '#f59e0b',
+                    color: '#FFFFFF',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 2px 6px rgba(245, 158, 11, 0.3)',
+                  }}
+                >
+                  📊 Painel de Submissões (174)
+                </Link>
               </div>
             </div>
           </div>
