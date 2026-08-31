@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
 import bannerMarcoZero from '../../../assets/marco-zero-recife.avif'
@@ -353,7 +354,7 @@ export default function StartupWorldCupPage() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: '16px',
             marginBottom: '36px',
           }}
@@ -373,7 +374,7 @@ export default function StartupWorldCupPage() {
               boxShadow: activeTab === 'sobre' ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
             }}
           >
-            Sobre
+            Sobre a Competição
           </button>
 
           <button
@@ -388,10 +389,33 @@ export default function StartupWorldCupPage() {
               fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.2s ease',
+              boxShadow: activeTab === 'inscricao' ? '0 4px 12px rgba(2, 132, 199, 0.25)' : 'none',
             }}
           >
-            Pré-inscrição!
+            Formulário de Pré-inscrição
           </button>
+
+          <Link
+            to="/legacy/startupworldcup-inscricoes"
+            style={{
+              padding: '14px 24px',
+              borderRadius: '8px',
+              backgroundColor: '#7C3AED',
+              color: '#ffffff',
+              fontSize: '15px',
+              fontWeight: 700,
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
+            }}
+          >
+            <span>📊 Painel de Inscrições (23)</span>
+            <span>↗</span>
+          </Link>
         </div>
 
         {/* ───────────────────────────────────────────────────────────── */}

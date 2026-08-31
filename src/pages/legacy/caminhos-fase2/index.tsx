@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
 import bannerCaminhos from '../../../assets/banner-caminhos.avif'
@@ -189,8 +190,8 @@ export default function CaminhosFase2Page() {
               Trilha Caminhos: ajudando a alcançar novas oportunidades!
             </h1>
 
-            {/* Tabs: Início & Inscrição */}
-            <div style={{ display: 'flex', gap: '12px' }}>
+            {/* Tabs: Início, Inscrição & Painel de Inscrições */}
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={() => setActiveTab('inicio')}
@@ -227,6 +228,29 @@ export default function CaminhosFase2Page() {
               >
                 Inscrição
               </button>
+
+              <Link
+                to="/legacy/caminhos-inscricoes"
+                style={{
+                  padding: '8px 24px',
+                  borderRadius: '4px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  backgroundColor: '#00A8B5',
+                  color: '#FFFFFF',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 8px rgba(0, 168, 181, 0.3)',
+                  transition: 'all 0.15s ease',
+                  marginLeft: 'auto',
+                }}
+              >
+                <span>📊 Painel de Inscrições (43 Propostas)</span>
+                <span>↗</span>
+              </Link>
             </div>
           </div>
 

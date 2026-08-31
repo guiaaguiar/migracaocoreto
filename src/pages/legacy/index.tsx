@@ -84,6 +84,7 @@ const FEATURED_PROGRAMS: ProgramItem[] = [
     mainSlug: 'startupworldcup',
     pages: [
       { slug: 'startupworldcup', name: 'Página Oficial' },
+      { slug: 'startupworldcup-inscricoes', name: 'Painel de Inscrições' },
     ],
   },
   {
@@ -120,6 +121,7 @@ const FEATURED_PROGRAMS: ProgramItem[] = [
     mainSlug: 'hackercidadao',
     pages: [
       { slug: 'hackercidadao', name: 'Portal Hacker Cidadão' },
+      { slug: 'hackercidadao-inscricoes', name: 'Painel de Inscrições' },
     ],
   },
   {
@@ -136,6 +138,7 @@ const FEATURED_PROGRAMS: ProgramItem[] = [
     mainSlug: 'caminhos-fase2',
     pages: [
       { slug: 'caminhos-fase2', name: 'Trilha Centelha PE' },
+      { slug: 'caminhos-inscricoes', name: 'Painel de Inscrições' },
     ],
   },
 ]

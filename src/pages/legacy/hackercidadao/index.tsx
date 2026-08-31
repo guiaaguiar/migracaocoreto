@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
 
@@ -441,6 +442,27 @@ export default function HackerCidadaoPage() {
             >
               fale conosco
             </button>
+            <Link
+              to="/legacy/hackercidadao-inscricoes"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 18px',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 700,
+                backgroundColor: '#10B981',
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                marginLeft: 'auto',
+                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <span>📊 Painel de Inscrições (961)</span>
+              <span>↗</span>
+            </Link>
           </div>
 
           {/* ── SECTION 1: INÍCIO (Overview) ── */}

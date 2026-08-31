@@ -6,12 +6,14 @@ import AvaliadorPremioRecPage from './pages/legacy/avaliador-premiorec'
 import AvaliadorTrilhaPage from './pages/legacy/avaliador-trilha'
 import BoPage from './pages/legacy/bo'
 import CaminhosFase2Page from './pages/legacy/caminhos-fase2'
+import CaminhosInscricoesPage from './pages/legacy/caminhos-inscricoes'
 import CompleteInscricaoPage from './pages/legacy/complete-inscricao'
 import EitaPage from './pages/legacy/eita'
 import EitaSubmissoesPage from './pages/legacy/eita-submissoes'
 import EitaAvaliacoesMentoresPage from './pages/legacy/eita-avaliacoes-mentores'
 import EitaAvaliacoesOperacaoPage from './pages/legacy/eita-avaliacoes-operacao'
 import HackerCidadaoPage from './pages/legacy/hackercidadao'
+import HackerCidadaoInscricoesPage from './pages/legacy/hackercidadao-inscricoes'
 
 import HomePage from './pages/legacy/home'
 import HomeArianoPage from './pages/legacy/home-arianov0'
@@ -39,6 +41,7 @@ import PremioRecAvaliacoesFase1Page from './pages/legacy/premiorec-avaliacoes-fa
 import PremioRecAvaliacoesFase2Page from './pages/legacy/premiorec-avaliacoes-fase2'
 import QuizzDescubraSeuLugarPage from './pages/legacy/quizz-descubra_seu_lugar'
 import StartupWorldCupPage from './pages/legacy/startupworldcup'
+import StartupWorldCupInscricoesPage from './pages/legacy/startupworldcup-inscricoes'
 import StartupsEMeuEcossistemaPage from './pages/legacy/startups_e_meu_ecossistema'
 import TrilhaEitaPage from './pages/legacy/trilha-eita'
 
@@ -73,6 +76,11 @@ function App() {
         <Route path="/legacy/avaliador-trilha" element={<AvaliadorTrilhaPage />} />
         <Route path="/legacy/bo" element={<BoPage />} />
         <Route path="/legacy/caminhos-fase2" element={<CaminhosFase2Page />} />
+        <Route path="/legacy/caminhos-inscricoes" element={<CaminhosInscricoesPage />} />
+        <Route path="/legacy/caminhos-fase2-inscricoes" element={<CaminhosInscricoesPage />} />
+        <Route path="/legacy/caminhos-submissoes" element={<CaminhosInscricoesPage />} />
+        <Route path="/legacy/centelha-inscricoes" element={<CaminhosInscricoesPage />} />
+        <Route path="/legacy/centelha-submissoes" element={<CaminhosInscricoesPage />} />
         <Route path="/legacy/complete-inscricao" element={<CompleteInscricaoPage />} />
         <Route path="/legacy/eita" element={<EitaPage />} />
         <Route path="/legacy/eita-submissoes" element={<EitaSubmissoesPage />} />
@@ -85,6 +93,10 @@ function App() {
         <Route path="/legacy/eita-operacao" element={<EitaAvaliacoesOperacaoPage />} />
         <Route path="/legacy/eita-fase2" element={<EitaAvaliacoesOperacaoPage />} />
         <Route path="/legacy/hackercidadao" element={<HackerCidadaoPage />} />
+        <Route path="/legacy/hackercidadao-inscricoes" element={<HackerCidadaoInscricoesPage />} />
+        <Route path="/legacy/hackercidadao-submissoes" element={<HackerCidadaoInscricoesPage />} />
+        <Route path="/legacy/hacker-inscricoes" element={<HackerCidadaoInscricoesPage />} />
+        <Route path="/legacy/hacker-submissoes" element={<HackerCidadaoInscricoesPage />} />
         <Route path="/legacy/inscricao-conexoes" element={<InscricaoConexoesPage />} />
         <Route path="/legacy/inscricao-desafio" element={<InscricaoDesafioPage />} />
         <Route path="/legacy/inscricao-desafio-v1" element={<InscricaoDesafioV1Page />} />
@@ -119,6 +131,10 @@ function App() {
         <Route path="/legacy/quizz-descubra_seu_lugar" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar/:slug" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/startupworldcup" element={<StartupWorldCupPage />} />
+        <Route path="/legacy/startupworldcup-inscricoes" element={<StartupWorldCupInscricoesPage />} />
+        <Route path="/legacy/startupworldcup-submissoes" element={<StartupWorldCupInscricoesPage />} />
+        <Route path="/legacy/swc-inscricoes" element={<StartupWorldCupInscricoesPage />} />
+        <Route path="/legacy/swc-submissoes" element={<StartupWorldCupInscricoesPage />} />
         <Route path="/legacy/startups_e_meu_ecossistema" element={<StartupsEMeuEcossistemaPage />} />
         <Route path="/legacy/startups-e-meu-ecossistema" element={<StartupsEMeuEcossistemaPage />} />
         <Route path="/legacy/trilha-eita" element={<TrilhaEitaPage />} />

@@ -14,11 +14,11 @@ export interface NitroSubmission {
   Nome_nit: string
   cnpj: string | null
   descricao: string
-  documentos: string[]
+  documentos: any[]
   linkExterno: string | null
   aceiteEdital: boolean
   aceiteLgpd: boolean
-  cotitularidades?: string | null
+  cotitularidades?: string | string[] | null
   slug: string
 }
 
