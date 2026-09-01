@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
-import { useSearchParams, Link, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
 import {
   ASSESSMENTS_FASE_2,
   exportToCSV
@@ -95,65 +96,8 @@ export default function PremioRecAvaliacoesFase2Page() {
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
 
-          {/* ── Sub-Navigation Tabs between Dashboards ── */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <Link
-              to="/legacy/premiorec-submissoes"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>📋 Submissões (164)</span>
-            </Link>
-
-            <Link
-              to="/legacy/premiorec-avaliacoes-fase1"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🔍 Avaliações 1ª Fase (107)</span>
-            </Link>
-
-            <Link
-              to="/legacy/premiorec-avaliacoes-fase2"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#7E22CE',
-                color: '#FFFFFF',
-                textDecoration: 'none',
-                boxShadow: '0 2px 8px rgba(126, 34, 206, 0.25)',
-              }}
-            >
-              <span>🏆 Avaliações 2ª Fase ({totalAvaliacoes})</span>
-            </Link>
-          </div>
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="premiorec" activeTab="evaluations2" />
 
           {/* ── Top Hero Card (Avaliações 2ª Fase) ── */}
           <div

@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
+import UnifiedSubmissionModal, { type SubmissionData, type EvaluationItem, type CategoryOption } from '../../../components/UnifiedSubmissionModal'
 import {
   EITA_SUBMISSIONS,
-  EITA_MENTOR_EVALUATIONS,
-  EITA_COMMITTEE_OPERATIONS,
   EITA_EVALUATIONS_BY_ID,
   EITA_OPERATIONS_BY_ID,
   exportToCSV
@@ -117,85 +117,8 @@ export default function EitaSubmissoesPage() {
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
 
-          {/* ── Sub-Navigation Tabs between EITA Dashboards ── */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <Link
-              to="/legacy/eita-submissoes"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#00a8b5',
-                color: '#FFFFFF',
-                textDecoration: 'none',
-                boxShadow: '0 2px 8px rgba(0, 168, 181, 0.3)',
-              }}
-            >
-              <span>📋 Submissões EITA ({totalSubmissoes})</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita-avaliacoes-mentores"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🔍 Avaliações dos Mentores ({EITA_MENTOR_EVALUATIONS.length})</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita-avaliacoes-operacao"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🏆 Consolidação & Operação ({EITA_COMMITTEE_OPERATIONS.length})</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#64748B',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-                marginLeft: 'auto',
-              }}
-            >
-              <span>← Portal Oficial E.I.T.A!</span>
-            </Link>
-          </div>
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="eita" activeTab="submissions" />
 
           {/* ── Top Hero Card (Design System Nitro/Premio) ── */}
           <div
@@ -679,297 +602,104 @@ export default function EitaSubmissoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "DETALHES DA SUBMISSÃO EITA" ── */}
+      {/* ── MODAL UNIVERSAL "DETALHES DA SUBMISSÃO EITA" (PADRÃO BUBBLE BO) ── */}
       {selectedSubmission && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '24px',
-          }}
-          onClick={handleCloseModal}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '920px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseModal}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                fontSize: '22px',
-                cursor: 'pointer',
-                color: '#64748B',
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Top CSV Button */}
-            <button
-              onClick={() => exportToCSV(`submissao_eita_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
-              style={{
-                width: '100%',
-                border: '1.5px solid #00a8b5',
-                borderRadius: '8px',
-                padding: '14px',
-                backgroundColor: '#FFFFFF',
-                color: '#00a8b5',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span>Exportar Dados da Submissão em CSV</span>
-            </button>
-
-            {/* Modal Title & Identification */}
-            <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <span style={{ backgroundColor: '#022340', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.id}
-                </span>
-                <span style={{ backgroundColor: '#E0F2FE', color: '#0369A1', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
-                  📍 {selectedSubmission.cidade}
-                </span>
-                {selectedSubmission.CNPJ && (
-                  <span style={{ backgroundColor: '#F1F5F9', color: '#475569', fontSize: '12px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px' }}>
-                    CNPJ: {selectedSubmission.CNPJ}
-                  </span>
-                )}
-                {selectedSubmission.dataCadastro && (
-                  <span style={{ fontSize: '12px', color: '#64748B' }}>
-                    📅 {selectedSubmission.dataCadastro}
-                  </span>
-                )}
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
-                {selectedSubmission.title}
-              </h2>
-
-              {/* Submitter & Company Details Box */}
-              <div style={{ backgroundColor: '#F8FAFC', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginBottom: '12px' }}>
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    👤 Quem Submeteu / Autor (pf_nome / Resp_nome):
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.pf_nome || selectedSubmission.Resp_nome}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    🏢 Empresa / Startup (Nome_fantasia):
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.Nome_fantasia}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    📍 Localização / Cidade:
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.cidade}
-                  </div>
-                </div>
-
-                {selectedSubmission.CNPJ && (
-                  <div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                      📄 CNPJ Registrado:
-                    </span>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857' }}>
-                      {selectedSubmission.CNPJ}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div style={{ backgroundColor: '#F0FDFA', border: '1px solid #CCFBF1', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: '#0F766E', fontWeight: 600 }}>
-                🎯 <strong>Desafio Público Vinculado:</strong> {selectedSubmission.desafio}
-              </div>
-            </div>
-
-            {/* ── Problema e Solução Proposta ── */}
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                💡 Problema e Solução Proposta
-              </h3>
-              <div style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', lineHeight: 1.7, color: '#1E293B', whiteSpace: 'pre-line' }}>
-                {selectedSubmission.comoResolve || 'Nenhum detalhe textual registrado.'}
-              </div>
-            </div>
-
-            {/* ── Documentos e Anexos ── */}
-            {selectedSubmission.documentos.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  📎 Documentos e Anexos Submetidos ({selectedSubmission.documentos.length})
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {selectedSubmission.documentos.map((doc, idx) => {
-                    const decodedName = decodeURIComponent(doc.split('/').pop() || `Anexo ${idx + 1}`)
-                    const fullUrl = doc.startsWith('http') ? doc : `https:${doc}`
-                    return (
-                      <a
-                        key={idx}
-                        href={fullUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '12px 16px',
-                          backgroundColor: '#F8FAFC',
-                          border: '1px solid #CBD5E1',
-                          borderRadius: '8px',
-                          color: '#0284c7',
-                          textDecoration: 'none',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        <span>📄 {decodedName}</span>
-                        <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>Visualizar / Baixar ↗</span>
-                      </a>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Avaliações dos Mentores Vinculadas ── */}
-            {selectedSubmission.evaluationIds.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  🔍 Avaliações dos Mentores ({selectedSubmission.evaluationIds.length})
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {selectedSubmission.evaluationIds.map(evId => {
-                    const ev = EITA_EVALUATIONS_BY_ID[evId]
-                    if (!ev) return null
-                    return (
-                      <div key={evId} style={{ backgroundColor: '#F0F9FF', border: '1px solid #BAE6FD', borderRadius: '8px', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                        <div>
-                          <div style={{ fontSize: '14px', fontWeight: 800, color: '#0369A1' }}>
-                            👤 Mentor: {ev.mentor}
-                          </div>
-                          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
-                            {ev.desafioCategory} • {ev.createdDate || 'Data não registrada'}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                          {ev.propostaScore !== null && (
-                            <span style={{ backgroundColor: '#FFFFFF', color: '#0284c7', border: '1px solid #BAE6FD', fontSize: '13px', fontWeight: 900, padding: '4px 10px', borderRadius: '12px' }}>
-                              Score: {ev.propostaScore.toFixed(2)} ⭐️
-                            </span>
-                          )}
-                          <Link
-                            to={`/legacy/eita-avaliacoes-mentores?search=${encodeURIComponent(ev.id)}`}
-                            style={{ fontSize: '12px', color: '#0284c7', fontWeight: 700, textDecoration: 'none' }}
-                          >
-                            Ver no Painel ↗
-                          </Link>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Memória de Cálculo da Banca ── */}
-            {selectedSubmission.operationIds.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  🏆 Memória de Cálculo e Nota Consolidada da Banca ({selectedSubmission.operationIds.length})
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {selectedSubmission.operationIds.map(opId => {
-                    const op = EITA_OPERATIONS_BY_ID[opId]
-                    if (!op) return null
-                    return (
-                      <div key={opId} style={{ backgroundColor: '#FAF5FF', border: '1px solid #E9D5FF', borderRadius: '8px', padding: '16px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 800, color: '#7E22CE' }}>
-                            Registro: {op.id}
-                          </span>
-                          {op.notaFinal !== null && (
-                            <span style={{ backgroundColor: '#7E22CE', color: '#FFFFFF', fontSize: '14px', fontWeight: 900, padding: '4px 12px', borderRadius: '12px' }}>
-                              Nota Final: {op.notaFinal.toFixed(2)} ⭐️
-                            </span>
-                          )}
-                        </div>
-                        {op.criteriosENota && (
-                          <div style={{ backgroundColor: '#FFFFFF', padding: '12px', borderRadius: '6px', border: '1px solid #E9D5FF', fontSize: '12px', color: '#334155', whiteSpace: 'pre-line', lineHeight: 1.6, maxHeight: '160px', overflowY: 'auto' }}>
-                            {op.criteriosENota}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Close Button Footer */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button
-                onClick={handleCloseModal}
-                style={{
-                  backgroundColor: '#00a8b5',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 28px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnifiedSubmissionModal
+          submission={mapEitaToSubmissionData(selectedSubmission)}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   )
 }
+
+function mapEitaToSubmissionData(sub: EitaSubmission): SubmissionData {
+  const evals: EvaluationItem[] = []
+
+  // Avaliações dos Mentores
+  sub.evaluationIds.forEach(evId => {
+    const ev = EITA_EVALUATIONS_BY_ID[evId]
+    if (ev) {
+      evals.push({
+        id: ev.id,
+        phase: 'Avaliação Técnica / Mentores',
+        evaluatorName: ev.mentor,
+        score: ev.propostaScore,
+        comment: `Desafio: ${ev.desafioCategory}. Data de registro: ${ev.createdDate || 'Recente'}. Média proposta: ${ev.propostaMedia || '-'}`
+      })
+    }
+  })
+
+  // Operação / Banca
+  sub.operationIds.forEach(opId => {
+    const op = EITA_OPERATIONS_BY_ID[opId]
+    if (op) {
+      evals.push({
+        id: op.id,
+        phase: 'Comitê e Banca de Operação',
+        evaluatorName: 'Comitê de Avaliação E.I.T.A.!',
+        score: op.notaFinal,
+        comment: op.criteriosENota || 'Nota consolidada pela banca avaliadora.'
+      })
+    }
+  })
+
+  // Categorias EITA
+  const eitaCategories: CategoryOption[] = [
+    { id: 'residuos', title: 'Resíduos Sólidos & Limpeza Urbana', subtitle: 'Desafio EITA' },
+    { id: 'defesa_civil', title: 'Defesa Civil & Monitoramento Climático', subtitle: 'Desafio EITA' },
+    { id: 'mobilidade', title: 'Mobilidade Urbana & Gestão de Tráfego', subtitle: 'Desafio EITA' },
+    { id: 'saude', title: 'Saúde Pública & Gestão de Consultas', subtitle: 'Desafio EITA' },
+    { id: 'educacao', title: 'Educação & Tecnologia em Sala de Aula', subtitle: 'Desafio EITA' },
+    { id: 'energia', title: 'Eficiência Energética & Iluminação', subtitle: 'Desafio EITA' },
+    { id: 'empreendedorismo', title: 'Empreendedorismo & Negócios Locais', subtitle: 'Desafio EITA' },
+    { id: 'cultura', title: 'Cultura, Turismo & Economia Criativa', subtitle: 'Desafio EITA' }
+  ]
+
+  return {
+    id: sub.id,
+    programName: '3º Ciclo E.I.T.A.! Recife',
+    title: sub.sw_nome || sub.title,
+    organization: sub.Nome_fantasia || (sub.CNPJ ? `CNPJ: ${sub.CNPJ}` : 'Equipe Proponente'),
+    cnpj: sub.CNPJ,
+    city: sub.cidade || 'Recife',
+    state: 'PE',
+    moraEmRecife: sub.cidade?.toLowerCase() === 'recife' ? 'Sim' : 'Não',
+    email: `${sub.id}@eita.recife.pe.gov.br`,
+    responsibleName: sub.pf_nome || sub.Resp_nome || 'Proponente / Autor',
+    phone: '(81) 98800-0000',
+    socialLink: 'eita.recife.pe.gov.br',
+    foundedYear: '2023',
+    category: sub.desafioCategory,
+    availableCategories: eitaCategories,
+    description: sub.comoResolve,
+    helpDescription: `Explique de forma clara como sua solução endereça diretamente o desafio público selecionado: "${sub.desafio}". Aponte a dor central, os objetivos da proposta e o impacto esperado.`,
+    statusFase: sub.isSegundaFase ? 'Classificado para a 2ª Fase' : '1ª Fase / Triagem Técnica',
+    topicosConexao: [sub.desafioCategory, 'GovTech', 'Inovação Aberta', 'Prefeitura do Recife', sub.cidade].filter(Boolean) as string[],
+    termosAceitos: true,
+    autorizaLGPD: true,
+    criteriaAnswers: [
+      {
+        title: 'Desafio Público Vinculado',
+        helpText: 'Problema público prioritário endereçado por esta solução no ecossistema do Recife.',
+        content: sub.desafio
+      },
+      {
+        title: 'Solução e Metodologia de Implementação',
+        helpText: 'Detalhamento da abordagem metodológica, tecnologia empregada e modelo de operação.',
+        content: sub.comoResolve
+      },
+      {
+        title: 'Estrutura da Equipe e Capacidade Técnica',
+        helpText: 'Perfil dos integrantes, dedicação e competências técnicas para entrega.',
+        content: `Autor / Responsável: ${sub.pf_nome || sub.Resp_nome} • Entidade: ${sub.Nome_fantasia} • Município: ${sub.cidade}`
+      }
+    ],
+    attachments: sub.documentos,
+    evaluations: evals,
+    status: sub.isSegundaFase ? 'Segunda Fase' : 'Primeira Fase',
+    slug: sub.slug,
+    rawBackendData: sub
+  }
+}
+

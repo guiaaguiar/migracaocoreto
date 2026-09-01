@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
+import UnifiedSubmissionModal, { type SubmissionData, type EvaluationItem, type CategoryOption } from '../../../components/UnifiedSubmissionModal'
 import {
   NITRO_SUBMISSIONS,
   NITRO_EDITAL1_SUBMISSIONS,
@@ -133,6 +135,9 @@ export default function NitroInscricoesPage() {
       <div style={{ display: 'flex', flex: 1 }}>
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
+
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="nitro" activeTab="submissions" />
 
           {/* ── Sub-Navigation Tabs between Nitro Editais ── */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
@@ -751,254 +756,80 @@ export default function NitroInscricoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "DETALHES DA SUBMISSÃO NITRO" (Assertive Data) ── */}
+      {/* ── MODAL UNIVERSAL "DETALHES DA SUBMISSÃO NITRO" (PADRÃO BUBBLE BO) ── */}
       {selectedSubmission && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '24px',
-          }}
-          onClick={handleCloseModal}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '920px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseModal}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                fontSize: '22px',
-                cursor: 'pointer',
-                color: '#64748B',
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Top CSV Button */}
-            <button
-              onClick={() => exportToCSV(`submissao_nitro_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
-              style={{
-                width: '100%',
-                border: '1.5px solid #f59e0b',
-                borderRadius: '8px',
-                padding: '14px',
-                backgroundColor: '#FFFFFF',
-                color: '#b45309',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span>Exportar Dados da Submissão em CSV</span>
-            </button>
-
-            {/* Modal Title & Identification */}
-            <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <span style={{ backgroundColor: '#022340', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.id}
-                </span>
-                <span style={{ backgroundColor: '#FEF3C7', color: '#92400E', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.editalName}
-                </span>
-                <span style={{ backgroundColor: '#F1F5F9', color: '#475569', fontSize: '12px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.category}
-                </span>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
-                {selectedSubmission.sw_nome}
-              </h2>
-
-              {/* ── Submitter & Company Details Card ── */}
-              <div style={{ backgroundColor: '#F8FAFC', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    👤 Quem Submeteu / Autor (pf_nome / Resp_nome):
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.pf_nome || selectedSubmission.Resp_nome}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    🏢 Empresa / Startup (Nome_fantasia):
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.Nome_fantasia}
-                  </div>
-                </div>
-
-                {selectedSubmission.Nome_nit && (
-                  <div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                      🏛️ NIT / ICT (Nome_nit):
-                    </span>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#0284c7' }}>
-                      {selectedSubmission.Nome_nit}
-                    </div>
-                  </div>
-                )}
-
-                {selectedSubmission.cnpj && (
-                  <div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                      📄 CNPJ Registrado:
-                    </span>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#047857' }}>
-                      {selectedSubmission.cnpj}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* ── Descrição e Aplicabilidade ── */}
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#92400E', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                💡 Descrição da Solução, Aplicabilidade e Justificativa
-              </h3>
-              <div style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', lineHeight: 1.7, color: '#1E293B', whiteSpace: 'pre-line' }}>
-                {selectedSubmission.descricao || 'Nenhum detalhe textual registrado.'}
-              </div>
-            </div>
-
-            {/* ── Documentos e Anexos ── */}
-            {selectedSubmission.documentos.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#92400E', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  📎 Documentos e Anexos Submetidos ({selectedSubmission.documentos.length})
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {selectedSubmission.documentos.map((doc, idx) => {
-                    const decodedName = decodeURIComponent(doc.split('/').pop() || `Anexo ${idx + 1}`)
-                    const fullUrl = doc.startsWith('http') ? doc : `https:${doc}`
-                    return (
-                      <a
-                        key={idx}
-                        href={fullUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '12px 16px',
-                          backgroundColor: '#FFFBEB',
-                          border: '1px solid #FDE68A',
-                          borderRadius: '8px',
-                          color: '#B45309',
-                          textDecoration: 'none',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        <span>📄 {decodedName}</span>
-                        <span style={{ fontSize: '12px', color: '#92400E', fontWeight: 600 }}>Visualizar / Baixar ↗</span>
-                      </a>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Link Externo / Plataforma ── */}
-            {selectedSubmission.linkExterno && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#92400E', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  🌐 Link Externo / Plataforma Vinculada
-                </h3>
-                <a
-                  href={selectedSubmission.linkExterno}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 18px',
-                    backgroundColor: '#F0F9FF',
-                    border: '1px solid #BAE6FD',
-                    borderRadius: '8px',
-                    color: '#0284c7',
-                    textDecoration: 'none',
-                    fontSize: '13px',
-                    fontWeight: 700,
-                  }}
-                >
-                  <span>🔗 {selectedSubmission.linkExterno}</span>
-                  <span>↗</span>
-                </a>
-              </div>
-            )}
-
-            {/* ── Termos de Aceite & LGPD ── */}
-            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '14px', border: '1px solid #E2E8F0', display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-              <div style={{ fontSize: '13px', color: '#475569' }}>
-                📜 <strong>Aceite do Edital:</strong> {selectedSubmission.aceiteEdital ? '✅ Declarado e Aceito' : '⚠️ Não especificado'}
-              </div>
-              <div style={{ fontSize: '13px', color: '#475569' }}>
-                🔒 <strong>Conformidade LGPD:</strong> {selectedSubmission.aceiteLgpd ? '✅ Autorizado' : '⚠️ Não especificado'}
-              </div>
-            </div>
-
-            {/* Close Button Footer */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button
-                onClick={handleCloseModal}
-                style={{
-                  backgroundColor: '#f59e0b',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 28px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnifiedSubmissionModal
+          submission={mapNitroToSubmissionData(selectedSubmission)}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   )
 }
+
+function mapNitroToSubmissionData(sub: NitroSubmission): SubmissionData {
+  const evals: EvaluationItem[] = []
+
+  // Categorias Nitro
+  const nitroCategories: CategoryOption[] = [
+    { id: 'edital1', title: 'Edital 001 — Mapeamento de ICTs', subtitle: 'Capacidade Científica & NIT' },
+    { id: 'edital2', title: 'Edital 002 — ConectaLabs', subtitle: 'Inovação Aberta & Desafios' },
+    { id: 'edital3', title: 'Edital 003 — Portfólio Tecnológico & INPI', subtitle: 'Patentes & Transferência' },
+    { id: 'software', title: 'Software & Plataforma Cívica', subtitle: 'Ativo Tecnológico' },
+    { id: 'biotech', title: 'Biotecnologia & Saúde', subtitle: 'Ativo Tecnológico' },
+    { id: 'hardware', title: 'Hardware & IoT / Robótica', subtitle: 'Ativo Tecnológico' }
+  ]
+
+  return {
+    id: sub.id,
+    programName: sub.editalName || 'Programa NITRO ICT & ConectaLabs',
+    title: sub.sw_nome || sub.title,
+    organization: sub.Nome_fantasia || sub.Nome_nit || (sub.cnpj ? `CNPJ: ${sub.cnpj}` : 'Empresa / ICT Proponente'),
+    cnpj: sub.cnpj,
+    instituicaoEnsino: sub.Nome_nit,
+    responsibleName: sub.pf_nome || sub.Resp_nome || 'Autor / Proponente',
+    city: 'Recife',
+    state: 'PE',
+    moraEmRecife: 'Sim',
+    email: `${sub.id}@nitro.recife.pe.gov.br`,
+    phone: '(81) 98800-0000',
+    socialLink: sub.linkExterno || 'nitro.recife.pe.gov.br',
+    foundedYear: '2023',
+    category: sub.category || sub.editalName,
+    availableCategories: nitroCategories,
+    description: sub.descricao,
+    helpDescription: 'Explique a tecnologia patenteada, modelo de negócio, maturidade TRL e aplicabilidade prática nos desafios de inovação.',
+    estagio: sub.editalId === '003' ? 'Portfólio Tecnológico & Patente INPI' : (sub.editalId === '002' ? 'Inovação Aberta ConectaLabs' : 'Mapeamento de ICTs'),
+    topicosConexao: [sub.editalName, sub.Nome_nit ? `NIT: ${sub.Nome_nit}` : null, 'Patentes & Transferência', 'Inovação Aberta'].filter(Boolean) as string[],
+    termosAceitos: sub.aceiteEdital,
+    autorizaLGPD: sub.aceiteLgpd,
+    criteriaAnswers: [
+      {
+        title: 'Edital & Eixo Temático do Programa',
+        helpText: 'Identificação da chamada pública e escopo de enquadramento da submissão.',
+        content: `${sub.editalName} (Edital ID: ${sub.editalId})`
+      },
+      {
+        title: 'Descrição da Solução, Aplicabilidade e Justificativa',
+        helpText: 'Detalhamento técnico, problema solucionado e benefícios operacionais gerados.',
+        content: sub.descricao
+      },
+      {
+        title: 'Ativos de Propriedade Intelectual & Vinculação Institucional',
+        helpText: 'Registro de patentes, titularidade, NIT gestor e pessoa jurídica proponente.',
+        content: `NIT / ICT: ${sub.Nome_nit || 'Não especificado'}\nEmpresa / Startup: ${sub.Nome_fantasia || 'Não especificada'}\nCNPJ: ${sub.cnpj || 'Não registrado'}`
+      },
+      {
+        title: 'Conformidade e Aceite de Termos',
+        helpText: 'Termos de submissão do edital de inovação aberta e diretrizes LGPD.',
+        content: `Aceite do Edital: ${sub.aceiteEdital ? 'Concordância confirmada.' : 'Pendente'}\nConformidade LGPD: ${sub.aceiteLgpd ? 'Tratamento de dados autorizado.' : 'Pendente'}`
+      }
+    ],
+    attachments: sub.documentos,
+    links: sub.linkExterno ? [sub.linkExterno] : [],
+    evaluations: evals,
+    slug: sub.slug,
+    rawBackendData: sub
+  }
+}
+

@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
-import { useSearchParams, Link, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
 import {
   EITA_COMMITTEE_OPERATIONS,
   EITA_SUBMISSIONS,
@@ -82,85 +83,8 @@ export default function EitaAvaliacoesOperacaoPage() {
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
 
-          {/* ── Sub-Navigation Tabs between Dashboards ── */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <Link
-              to="/legacy/eita-submissoes"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>📋 Submissões EITA ({EITA_SUBMISSIONS.length})</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita-avaliacoes-mentores"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🔍 Avaliações dos Mentores (359)</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita-avaliacoes-operacao"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#7E22CE',
-                color: '#FFFFFF',
-                textDecoration: 'none',
-                boxShadow: '0 2px 8px rgba(126, 34, 206, 0.25)',
-              }}
-            >
-              <span>🏆 Consolidação & Operação ({totalRegistros})</span>
-            </Link>
-
-            <Link
-              to="/legacy/eita"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#64748B',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-                marginLeft: 'auto',
-              }}
-            >
-              <span>← Portal Oficial E.I.T.A!</span>
-            </Link>
-          </div>
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="eita" activeTab="evaluations2" />
 
           {/* ── Top Hero Card ── */}
           <div

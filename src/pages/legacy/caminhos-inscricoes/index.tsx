@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
+import UnifiedSubmissionModal, { type SubmissionData, type EvaluationItem, type CategoryOption } from '../../../components/UnifiedSubmissionModal'
 import {
   CAMINHOS_SUBMISSIONS,
   CAMINHOS_COM_ANEXOS,
@@ -150,6 +152,9 @@ export default function CaminhosInscricoesPage() {
       <div style={{ display: 'flex', flex: 1 }}>
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
+
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="caminhos" activeTab="submissions" />
 
           {/* ── Sub-Navigation Tabs between Caminhos Filter Groups ── */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
@@ -835,291 +840,92 @@ export default function CaminhosInscricoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "DETALHES DA PROPOSTA TRILHA CAMINHOS" (Assertive Data) ── */}
+      {/* ── MODAL UNIVERSAL "DETALHES DA SUBMISSÃO CAMINHOS DA INOVAÇÃO" (PADRÃO BUBBLE BO) ── */}
       {selectedSubmission && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '24px',
-          }}
-          onClick={handleCloseModal}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '920px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseModal}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                fontSize: '22px',
-                cursor: 'pointer',
-                color: '#64748B',
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Top CSV Button */}
-            <button
-              onClick={() => exportToCSV(`proposta_caminhos_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
-              style={{
-                width: '100%',
-                border: '1.5px solid #00A8B5',
-                borderRadius: '8px',
-                padding: '14px',
-                backgroundColor: '#FFFFFF',
-                color: '#007A87',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span>Exportar Dados da Proposta em CSV</span>
-            </button>
-
-            {/* Modal Title & Identification */}
-            <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <span style={{ backgroundColor: '#0F172A', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.id}
-                </span>
-                <span style={{ backgroundColor: '#E0F2FE', color: '#0369A1', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.edicaoName}
-                </span>
-                <span style={{ backgroundColor: '#F0FDFA', color: '#0F766E', fontSize: '12px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.categoria}
-                </span>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
-                {selectedSubmission.title}
-              </h2>
-
-              {/* ── Submitter & Proposta Details Card ── */}
-              <div style={{ backgroundColor: '#F8FAFC', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    👤 Proponente / Responsável:
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.proponente}
-                  </div>
-                </div>
-
-                {selectedSubmission.email && (
-                  <div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                      ✉️ E-mail de Contato:
-                    </span>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#0284C7' }}>
-                      {selectedSubmission.email}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    📍 Localização:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#0D9488' }}>
-                    {selectedSubmission.cidade} - {selectedSubmission.estado}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    📈 Fase na Trilha:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#007A87' }}>
-                    {selectedSubmission.estagio}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    💰 Subvenção Solicitada:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#047857' }}>
-                    {selectedSubmission.fomentoSolicitado}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    🛡️ Status Centelha PE:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#6D28D9' }}>
-                    {selectedSubmission.statusFase}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Resumo da Proposta ── */}
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#007A87', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                💡 Resumo Executivo & Justificativa da Inovação
-              </h3>
-              <div style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', lineHeight: 1.7, color: '#1E293B' }}>
-                {selectedSubmission.resumo}
-              </div>
-            </div>
-
-            {/* ── Documentos e Anexos (Pitches, Certificados) ── */}
-            {selectedSubmission.documentos.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#007A87', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  📎 Documentos & Arquivos da Proposta ({selectedSubmission.documentos.length})
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {selectedSubmission.documentos.map((doc, idx) => {
-                    const decodedName = decodeURIComponent(doc.split('/').pop() || `Anexo ${idx + 1}`)
-                    const fullUrl = doc.startsWith('http') ? doc : `https:${doc}`
-                    return (
-                      <a
-                        key={idx}
-                        href={fullUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '12px 16px',
-                          backgroundColor: '#F0FDFA',
-                          border: '1px solid #CCFBF1',
-                          borderRadius: '8px',
-                          color: '#0F766E',
-                          textDecoration: 'none',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        <span>📄 {decodedName}</span>
-                        <span style={{ fontSize: '12px', color: '#007A87', fontWeight: 600 }}>Visualizar / Baixar ↗</span>
-                      </a>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Link Plataforma Oficial Centelha ── */}
-            {selectedSubmission.linkExterno && (
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#007A87', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                  🌐 Link Oficial da Submissão (Programa Centelha PE)
-                </h3>
-                <a
-                  href={selectedSubmission.linkExterno}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 18px',
-                    backgroundColor: '#F5F3FF',
-                    border: '1px solid #DDD6FE',
-                    borderRadius: '8px',
-                    color: '#6D28D9',
-                    textDecoration: 'none',
-                    fontSize: '13px',
-                    fontWeight: 700,
-                  }}
-                >
-                  <span>🔗 {selectedSubmission.linkExterno}</span>
-                  <span>↗</span>
-                </a>
-              </div>
-            )}
-
-            {/* ── Parceiros & Mentores ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-              <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#007A87', margin: '0 0 8px 0' }}>
-                  🏛️ Instituições de Fomento & Apoio
-                </h4>
-                <div style={{ backgroundColor: '#F8FAFC', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', color: '#334155' }}>
-                  <ul style={{ margin: 0, paddingLeft: '18px', lineHeight: 1.6 }}>
-                    {selectedSubmission.parceiros.map((p, idx) => (
-                      <li key={idx}><strong>{p}</strong></li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#007A87', margin: '0 0 8px 0' }}>
-                  👥 Mentores & Assistente EDIT.AI
-                </h4>
-                <div style={{ backgroundColor: '#F8FAFC', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '12px', color: '#475569' }}>
-                  <ul style={{ margin: 0, paddingLeft: '18px', lineHeight: 1.5 }}>
-                    {selectedSubmission.mentores.map((m, idx) => (
-                      <li key={idx}>{m}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Close Button Footer */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button
-                onClick={handleCloseModal}
-                style={{
-                  backgroundColor: '#00A8B5',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 28px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnifiedSubmissionModal
+          submission={mapCaminhosToSubmissionData(selectedSubmission)}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   )
 }
+
+function mapCaminhosToSubmissionData(sub: CaminhosSubmission): SubmissionData {
+  const evals: EvaluationItem[] = []
+
+  // Mentores e Avaliadores
+  sub.mentores.forEach((m, idx) => {
+    evals.push({
+      id: `mentor_caminhos_${idx + 1}`,
+      phase: 'Trilha de Orientação EDIT.AI & Mentoria',
+      evaluatorName: m,
+      comment: `Acompanhamento da proposta na trilha do Centelha PE / Caminhos da Inovação. Foco na vertical ${sub.categoria}.`
+    })
+  })
+
+  // Categorias Caminhos
+  const caminhosCategories: CategoryOption[] = [
+    { id: 'biotech', title: 'Biotecnologia & Genômica', subtitle: 'Vertical Temática' },
+    { id: 'ti', title: 'TI, Software & Inteligência Artificial', subtitle: 'Vertical Temática' },
+    { id: 'eletro', title: 'Eletroeletrônica & Telecom', subtitle: 'Vertical Temática' },
+    { id: 'mecanica', title: 'Mecânica & Automação / Robótica', subtitle: 'Vertical Temática' },
+    { id: 'quimica', title: 'Química & Novos Materiais', subtitle: 'Vertical Temática' },
+    { id: 'saude', title: 'Saúde & Dispositivos Médicos', subtitle: 'Vertical Temática' },
+    { id: 'govtech', title: 'GovTech & Serviços Públicos', subtitle: 'Vertical Temática' },
+    { id: 'cidades', title: 'Cidades Sustentáveis & Mobilidade', subtitle: 'Vertical Temática' }
+  ]
+
+  return {
+    id: sub.id,
+    programName: sub.edicaoName || 'Programa Caminhos da Inovação',
+    title: sub.title,
+    organization: sub.proponente,
+    city: sub.cidade || 'Recife',
+    state: sub.estado || 'PE',
+    moraEmRecife: sub.cidade?.toLowerCase() === 'recife' ? 'Sim' : 'Não',
+    email: sub.email || `${sub.id}@caminhos.recife.pe.gov.br`,
+    responsibleName: sub.proponente,
+    phone: '(81) 98800-0000',
+    socialLink: sub.linkExterno || 'caminhosdainovacao.org.br',
+    foundedYear: '2024',
+    category: sub.categoria,
+    availableCategories: caminhosCategories,
+    description: sub.resumo,
+    helpDescription: 'Apresente o resumo da proposta inovadora, problema enfrentado pelo mercado ou sociedade, metodologia de pesquisa/desenvolvimento e valor do fomento solicitado.',
+    estagio: sub.estagio,
+    fomentoSolicitado: sub.fomentoSolicitado,
+    statusFase: sub.statusFase,
+    topicosConexao: [sub.categoria, 'Centelha PE', 'EDIT.AI', 'FACEPE & FINEP', sub.statusFase].filter(Boolean) as string[],
+    termosAceitos: true,
+    autorizaLGPD: true,
+    criteriaAnswers: [
+      {
+        title: 'Eixo & Vertical Temática da Inovação',
+        helpText: 'Área tecnológica prioritária de enquadramento da pesquisa aplicada.',
+        content: `Vertical: ${sub.categoria}\nLocalização: ${sub.cidade} - ${sub.estado}`
+      },
+      {
+        title: 'Resumo Executivo & Justificativa da Inovação',
+        helpText: 'Detalhamento do problema, solução técnica inovadora e impacto socioeconômico esperado.',
+        content: sub.resumo
+      },
+      {
+        title: 'Fomento Solicitado & Estágio na Trilha',
+        helpText: 'Recursos de subvenção econômica solicitados e maturidade na trilha de aceleração.',
+        content: `Subvenção Solicitada: ${sub.fomentoSolicitado}\nEstágio na Trilha: ${sub.estagio}\nStatus da Fase: ${sub.statusFase}`
+      },
+      {
+        title: 'Instituições de Apoio & Parceiros Estratégicos',
+        helpText: 'Entidades parceiras de fomento, pesquisa e desenvolvimento tecnológico.',
+        content: sub.parceiros.join(', ')
+      }
+    ],
+    attachments: sub.documentos,
+    links: sub.linkExterno ? [sub.linkExterno] : [],
+    evaluations: evals,
+    slug: sub.slug,
+    rawBackendData: sub
+  }
+}
+

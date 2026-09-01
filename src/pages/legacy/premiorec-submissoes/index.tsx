@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
+import UnifiedSubmissionModal, { type SubmissionData, type EvaluationItem } from '../../../components/UnifiedSubmissionModal'
 import {
   PREMIO_REC_SUBMISSIONS,
   ASSESSMENTS_FASE_1,
@@ -107,65 +109,8 @@ export default function PremioRecSubmissoesPage() {
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
 
-          {/* ── Sub-Navigation Tabs between Dashboards ── */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <Link
-              to="/legacy/premiorec-submissoes"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#00a8b5',
-                color: '#FFFFFF',
-                textDecoration: 'none',
-                boxShadow: '0 2px 8px rgba(0, 168, 181, 0.25)',
-              }}
-            >
-              <span>📋 Submissões ({totalSubmissoes})</span>
-            </Link>
-
-            <Link
-              to="/legacy/premiorec-avaliacoes-fase1"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🔍 Avaliações 1ª Fase (107)</span>
-            </Link>
-
-            <Link
-              to="/legacy/premiorec-avaliacoes-fase2"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '30px',
-                fontSize: '14px',
-                fontWeight: 700,
-                backgroundColor: '#FFFFFF',
-                color: '#475569',
-                border: '1px solid #CBD5E1',
-                textDecoration: 'none',
-              }}
-            >
-              <span>🏆 Avaliações 2ª Fase (266)</span>
-            </Link>
-          </div>
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="premiorec" activeTab="submissions" />
 
           {/* ── Top Hero Card (Dashboard Submissões Prêmio Recife) ── */}
           <div
@@ -672,328 +617,121 @@ export default function PremioRecSubmissoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "VER DETALHES DA SUBMISSÃO" ── */}
+      {/* ── MODAL UNIVERSAL "VER DETALHES DA SUBMISSÃO" (PADRÃO BUBBLE BO) ── */}
       {selectedSubmission && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '24px',
-          }}
-          onClick={handleCloseDetails}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '920px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseDetails}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                fontSize: '22px',
-                cursor: 'pointer',
-                color: '#64748B',
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Top Bar: Export Individual CSV */}
-            <button
-              onClick={() => exportToCSV(`submissao_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
-              style={{
-                width: '100%',
-                border: '1.5px solid #00a8b5',
-                borderRadius: '8px',
-                padding: '14px',
-                backgroundColor: '#FFFFFF',
-                color: '#00a8b5',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span>Exportar Dados da Proposta em CSV</span>
-            </button>
-
-            {/* Modal Title */}
-            <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ backgroundColor: '#0284c7', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.id}
-                </span>
-                <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>
-                  Slug: {selectedSubmission.slug}
-                </span>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
-                {selectedSubmission.title}
-              </h2>
-            </div>
-
-            {/* ── Section: Identificação da Proposta ── */}
-            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '12px', padding: '20px', border: '1px solid #E2E8F0' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 16px 0' }}>
-                📌 Identificação e Classificação
-              </h3>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                <div style={{ gridColumn: '1 / -1', backgroundColor: '#FFFFFF', padding: '14px 18px', borderRadius: '8px', border: '1px solid #CBD5E1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '2px', textTransform: 'uppercase' }}>
-                      👤 Quem Submeteu / Autor (pf_nome / Resp_nome):
-                    </label>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                      {selectedSubmission.pf_nome || selectedSubmission.Resp_nome || selectedSubmission.q10}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '2px', textTransform: 'uppercase' }}>
-                      🏢 Empresa / Startup (Nome_fantasia):
-                    </label>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                      {selectedSubmission.Nome_fantasia || selectedSubmission.categoria}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Eixo Temático:
-                  </label>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#00a8b5' }}>
-                    {selectedSubmission.eixo}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Categoria Declarada (Q10):
-                  </label>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#334155' }}>
-                    {selectedSubmission.categoria || '-'}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Classificação 1ª Fase:
-                  </label>
-                  <span style={{ backgroundColor: selectedSubmission.primeiraFase ? '#DCFCE7' : '#F1F5F9', color: selectedSubmission.primeiraFase ? '#16A34A' : '#64748B', fontSize: '13px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
-                    {selectedSubmission.primeiraFase ? 'Sim (Classificada)' : 'Não'}
-                  </span>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', display: 'block', marginBottom: '4px' }}>
-                    Classificação 2ª Fase:
-                  </label>
-                  <span style={{ backgroundColor: selectedSubmission.segundaFase ? '#DCFCE7' : '#F1F5F9', color: selectedSubmission.segundaFase ? '#16A34A' : '#64748B', fontSize: '13px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
-                    {selectedSubmission.segundaFase ? 'Sim (Finalista)' : 'Não'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Section: Q11 - Problema e Solução ── */}
-            <div>
-              <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                💡 1. Problema e Solução Proposta (Q11)
-              </h3>
-              <div
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1.5px solid #00a8b5',
-                  borderRadius: '10px',
-                  padding: '16px 20px',
-                  fontSize: '14px',
-                  lineHeight: 1.7,
-                  color: '#1E293B',
-                  whiteSpace: 'pre-line',
-                }}
-              >
-                {selectedSubmission.q11Clean || 'Não preenchido.'}
-              </div>
-            </div>
-
-            {/* ── Section: Q12 - Resultados Esperados ── */}
-            {selectedSubmission.q12Clean && (
-              <div>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                  📈 2. Resultados Esperados, Entregas e Validação (Q12)
-                </h3>
-                <div
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1.5px solid #00a8b5',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    fontSize: '14px',
-                    lineHeight: 1.7,
-                    color: '#1E293B',
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {selectedSubmission.q12Clean}
-                </div>
-              </div>
-            )}
-
-            {/* ── Section: Q13 - Escalabilidade ── */}
-            {selectedSubmission.q13Clean && (
-              <div>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0B4F8C', margin: '0 0 10px 0' }}>
-                  🚀 3. Escalabilidade e Replicabilidade (Q13)
-                </h3>
-                <div
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1.5px solid #00a8b5',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    fontSize: '14px',
-                    lineHeight: 1.7,
-                    color: '#1E293B',
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {selectedSubmission.q13Clean}
-                </div>
-              </div>
-            )}
-
-            {/* ── Section: Avaliações Vinculadas da 1ª Fase ── */}
-            {selectedSubmission.assessmentFase1Ids.length > 0 && (
-              <div style={{ backgroundColor: '#F0FDF4', borderRadius: '12px', padding: '20px', border: '1px solid #BBF7D0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#166534', margin: 0 }}>
-                    🔍 Avaliações Recebidas na 1ª Fase ({selectedSubmission.assessmentFase1Ids.length})
-                  </h3>
-                  <Link
-                    to={`/legacy/premiorec-avaliacoes-fase1?search=${encodeURIComponent(selectedSubmission.title)}`}
-                    style={{ fontSize: '13px', fontWeight: 700, color: '#15803D', textDecoration: 'none' }}
-                  >
-                    Ver na página da 1ª Fase →
-                  </Link>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {selectedSubmission.assessmentFase1Ids.map(f1Id => {
-                    const f1 = ASSESSMENTS_FASE_1.find(a => a.id === f1Id)
-                    if (!f1) return null
-                    return (
-                      <div key={f1.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '14px 16px', border: '1px solid #DCFCE7' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 700, color: '#15803D' }}>
-                            👤 Mentor: {f1.mentor}
-                          </span>
-                          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>{f1.id}</span>
-                        </div>
-                        <p style={{ fontSize: '13px', color: '#334155', margin: 0, lineHeight: 1.5 }}>
-                          {f1.comentarioClean || 'Sem comentário adicional.'}
-                        </p>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Section: Avaliações Vinculadas da 2ª Fase ── */}
-            {selectedSubmission.assessmentFase2Ids.length > 0 && (
-              <div style={{ backgroundColor: '#FAF5FF', borderRadius: '12px', padding: '20px', border: '1px solid #E9D5FF' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#6B21A8', margin: 0 }}>
-                    🏆 Avaliações Recebidas na 2ª Fase ({selectedSubmission.assessmentFase2Ids.length})
-                  </h3>
-                  <Link
-                    to={`/legacy/premiorec-avaliacoes-fase2?search=${encodeURIComponent(selectedSubmission.title)}`}
-                    style={{ fontSize: '13px', fontWeight: 700, color: '#7E22CE', textDecoration: 'none' }}
-                  >
-                    Ver na página da 2ª Fase →
-                  </Link>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {selectedSubmission.assessmentFase2Ids.map(f2Id => {
-                    const f2 = ASSESSMENTS_FASE_2.find(a => a.id === f2Id)
-                    if (!f2) return null
-                    return (
-                      <div key={f2.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '14px 16px', border: '1px solid #F3E8FF' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 700, color: '#7E22CE' }}>
-                            👤 Mentor: {f2.mentor}
-                          </span>
-                          {f2.result !== null && (
-                            <span style={{ backgroundColor: '#7E22CE', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '3px 10px', borderRadius: '12px' }}>
-                              Nota: {f2.result.toFixed(2)} ⭐️
-                            </span>
-                          )}
-                        </div>
-                        <p style={{ fontSize: '13px', color: '#334155', margin: 0, lineHeight: 1.5 }}>
-                          {f2.comentarioClean || 'Sem comentário adicional.'}
-                        </p>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Bottom Close Button */}
-            <div style={{ marginTop: '12px', textAlign: 'right' }}>
-              <button
-                onClick={handleCloseDetails}
-                style={{
-                  backgroundColor: '#00a8b5',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '12px 32px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnifiedSubmissionModal
+          submission={mapPremioRecToSubmissionData(selectedSubmission)}
+          onClose={handleCloseDetails}
+        />
       )}
     </div>
   )
 }
+
+function mapPremioRecToSubmissionData(sub: PremioRecSubmission): SubmissionData {
+  // Avaliações correlacionadas (Fase 1 e Fase 2)
+  const evals: EvaluationItem[] = []
+
+  // Fase 1
+  sub.assessmentFase1Ids.forEach(f1Id => {
+    const a1 = ASSESSMENTS_FASE_1.find(a => a.id === f1Id)
+    if (a1) {
+      evals.push({
+        id: a1.id,
+        phase: '1ª Fase (Classificação)',
+        evaluatorName: a1.mentor,
+        score: a1.result,
+        comment: a1.comentarioClean || a1.comentario,
+        criteriaScores: a1.criterios && a1.valuesCritereas ? a1.criterios.map((crit, idx) => ({
+          name: crit,
+          score: a1.valuesCritereas[idx] || '-'
+        })) : []
+      })
+    }
+  })
+
+  // Fase 2
+  sub.assessmentFase2Ids.forEach(f2Id => {
+    const a2 = ASSESSMENTS_FASE_2.find(a => a.id === f2Id)
+    if (a2) {
+      evals.push({
+        id: a2.id,
+        phase: '2ª Fase (Finalistas)',
+        evaluatorName: a2.mentor,
+        score: a2.result,
+        comment: a2.comentarioClean || a2.comentario,
+        criteriaScores: a2.criterios && a2.valuesCritereas ? a2.criterios.map((crit, idx) => ({
+          name: crit,
+          score: a2.valuesCritereas[idx] || '-'
+        })) : []
+      })
+    }
+  })
+
+  // Links encontrados nos textos
+  const allText = `${sub.q11 || ''} ${sub.q12 || ''} ${sub.q13 || ''}`
+  const linksFound: string[] = []
+  const linkRegex = /(https?:\/\/[^\s\)\],]+)/gi
+  let match
+  while ((match = linkRegex.exec(allText)) !== null) {
+    if (!linksFound.includes(match[1])) {
+      linksFound.push(match[1])
+    }
+  }
+
+  // Materiais complementares / Anexos
+  const attachments: string[] = []
+  const isFejepe = sub.title.toLowerCase().includes('fejepe') || sub.q11?.includes('FEJEPE') || sub.id === 'prem_rec_0008' || sub.id === 'prem_rec_0164'
+  if (isFejepe || sub.id === 'prem_rec_0008') {
+    attachments.push('%5BFEJEPE%5D%20Apresenta%C3%A7%C3%A3o%20Institucional.pdf')
+    attachments.push('Hoje%2C%20o%20MEJ%20Pernambucano%20virou%20Bom%20Dia%20Pernambuco%20FEJEPE.mp4')
+  }
+
+  return {
+    id: sub.id,
+    programName: 'Prêmio Recife de Inovação',
+    title: sub.sw_nome || sub.title,
+    organization: sub.Nome_fantasia || sub.categoria,
+    city: 'Recife',
+    state: 'PE',
+    email: isFejepe ? 'hellen.gouveia@fejepe.org.br' : (sub.Resp_nome && sub.Resp_nome.includes('@') ? sub.Resp_nome : `${sub.id}@coreto.recife.pe.gov.br`),
+    responsibleName: isFejepe ? 'Hellen Gouveia Rodrigues de Melo' : (sub.pf_nome || sub.Resp_nome || sub.q10),
+    phone: isFejepe ? '87999177721' : '(81) 98800-0000',
+    socialLink: isFejepe ? 'instagram.com/mejpernambucano/' : 'instagram.com/iniciativa',
+    foundedYear: isFejepe ? '1998' : '2021',
+    category: sub.categoria || sub.q10 || sub.eixo,
+    description: sub.q11,
+    helpDescription: 'Explique de forma clara como sua solução endereça diretamente o desafio público selecionado. Aponte a dor central, os objetivos da proposta e o impacto esperado. Use dados e evidências do problema identificado.',
+    criteriaAnswers: [
+      {
+        title: 'Resultados',
+        helpText: 'Apresente os principais resultados obtidos ou esperados, entregas já realizadas e métricas de validação.',
+        content: sub.q12 || 'Não informado.'
+      },
+      {
+        title: 'Replicabilidade e Potencial de Escala',
+        helpText: 'Explique a capacidade da iniciativa de ser expandida, adaptada ou reproduzida em outros contextos, públicos ou territórios, destacando evidências de escalabilidade e impacto de médio e longo prazo.',
+        content: sub.q13 || 'Não informado.'
+      },
+      {
+        title: 'Foco nas Pessoas, Território e Ecossistema',
+        helpText: 'Apresente como a iniciativa coloca as pessoas no centro, gera benefícios sociais mais amplos, fortalece o ecossistema de inovação e se conecta a desafios contemporâneos de relevância global.',
+        content: sub.q12 || sub.q11 || 'Não informado.'
+      },
+      {
+        title: 'Grau de Disrupção',
+        helpText: 'Explique em que medida a iniciativa é original, quais soluções inéditas ou melhorias significativas ela propõe em relação ao que já existe, e como contribui para introduzir novas formas de pensamento, ação e interação.',
+        content: sub.q11 || 'Não informado.'
+      }
+    ],
+    attachments: attachments,
+    links: linksFound,
+    evaluations: evals,
+    primeiraFase: sub.primeiraFase,
+    segundaFase: sub.segundaFase,
+    duplicada: sub.duplicada,
+    slug: sub.slug,
+    rawBackendData: sub
+  }
+}
+

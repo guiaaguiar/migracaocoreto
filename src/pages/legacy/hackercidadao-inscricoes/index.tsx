@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import Header from '../../../components/Header'
 import Sidebar from '../../../components/Sidebar'
+import ProgramNavigationHeader from '../../../components/ProgramNavigationHeader'
+import UnifiedSubmissionModal, { type SubmissionData, type EvaluationItem, type CategoryOption } from '../../../components/UnifiedSubmissionModal'
 import {
   HACKER_SUBMISSIONS,
   HACKER_UNIVERSITARIOS,
@@ -161,6 +163,9 @@ export default function HackerCidadaoInscricoesPage() {
       <div style={{ display: 'flex', flex: 1 }}>
         <Sidebar activeItem="painel" />
         <main style={{ flex: 1, padding: '32px', maxWidth: '1320px', width: '100%', margin: '0 auto' }}>
+
+          {/* ── Sub-Navigation Bar between Programs & Dashboards ── */}
+          <ProgramNavigationHeader currentProgramId="hacker" activeTab="submissions" />
 
           {/* ── Sub-Navigation Tabs between Hacker Filter Groups ── */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
@@ -840,261 +845,89 @@ export default function HackerCidadaoInscricoesPage() {
         </main>
       </div>
 
-      {/* ── MODAL "DETALHES DA INSCRIÇÃO HACKER CIDADÃO" (Assertive Data) ── */}
+      {/* ── MODAL UNIVERSAL "DETALHES DA INSCRIÇÃO HACKER CIDADÃO" (PADRÃO BUBBLE BO) ── */}
       {selectedSubmission && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '24px',
-          }}
-          onClick={handleCloseModal}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '920px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseModal}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                fontSize: '22px',
-                cursor: 'pointer',
-                color: '#64748B',
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Top CSV Button */}
-            <button
-              onClick={() => exportToCSV(`inscricao_hacker_${selectedSubmission.id}`, [selectedSubmission], csvColumnMap)}
-              style={{
-                width: '100%',
-                border: '1.5px solid #10B981',
-                borderRadius: '8px',
-                padding: '14px',
-                backgroundColor: '#FFFFFF',
-                color: '#047857',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span>Exportar Dados da Inscrição em CSV</span>
-            </button>
-
-            {/* Modal Title & Identification */}
-            <div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <span style={{ backgroundColor: '#022C22', color: '#FFFFFF', fontSize: '12px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.id}
-                </span>
-                <span style={{ backgroundColor: '#ECFDF5', color: '#047857', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.edicaoName}
-                </span>
-                <span style={{ backgroundColor: '#F1F5F9', color: '#475569', fontSize: '12px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px' }}>
-                  {selectedSubmission.category}
-                </span>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '0 0 12px 0', lineHeight: 1.3 }}>
-                {selectedSubmission.nome}
-              </h2>
-
-              {/* ── Submitter & Profile Details Card ── */}
-              <div style={{ backgroundColor: '#F8FAFC', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    👤 Participante:
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
-                    {selectedSubmission.nome}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    📄 CPF do Inscrito:
-                  </span>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857' }}>
-                    {selectedSubmission.cpf}
-                  </div>
-                </div>
-
-                {selectedSubmission.email && (
-                  <div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                      ✉️ E-mail de Contato:
-                    </span>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#0284C7' }}>
-                      {selectedSubmission.email}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    📍 Município / Residência:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#0F766E' }}>
-                    {selectedSubmission.cidade} - {selectedSubmission.estado}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    🎓 Nível Acadêmico:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: selectedSubmission.isUniversitario ? '#047857' : '#1E293B' }}>
-                    {selectedSubmission.isUniversitario ? 'Estudante Universitário' : 'Profissional / Sociedade Civil'}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-                    🛡️ Perfil no Ecossistema CORETO:
-                  </span>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#6D28D9' }}>
-                    {selectedSubmission.activeProfile}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Formação & Áreas de Atuação ── */}
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#047857', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                🎓 Formação Acadêmica & Perfil de Atuação
-              </h3>
-              <div style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', lineHeight: 1.7, color: '#1E293B' }}>
-                <p style={{ margin: '0 0 8px 0' }}>
-                  <strong>Curso / Área Declarada:</strong> {selectedSubmission.curso}
-                </p>
-                {selectedSubmission.areasDeAtuacao && (
-                  <p style={{ margin: '0 0 8px 0' }}>
-                    <strong>Áreas de Atuação:</strong> {selectedSubmission.areasDeAtuacao}
-                  </p>
-                )}
-                {selectedSubmission.atuacao && (
-                  <p style={{ margin: '0 0 8px 0' }}>
-                    <strong>Atuação Específica:</strong> {selectedSubmission.atuacao}
-                  </p>
-                )}
-                <p style={{ margin: 0, color: '#64748B', fontSize: '13px' }}>
-                  {selectedSubmission.descricao}
-                </p>
-              </div>
-            </div>
-
-            {/* ── Desafio Temático de Interesse ── */}
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#047857', margin: '0 0 10px 0', borderBottom: '2px solid #E2E8F0', paddingBottom: '6px' }}>
-                🎯 Desafio Temático & Alocação de Equipes
-              </h3>
-              <div style={{ backgroundColor: '#ECFDF5', padding: '16px', borderRadius: '8px', border: '1px solid #A7F3D0', fontSize: '14px', lineHeight: 1.6, color: '#065F46' }}>
-                <div style={{ fontWeight: 800, fontSize: '15px', marginBottom: '6px' }}>
-                  {selectedSubmission.desafioInteresse}
-                </div>
-                <div style={{ fontSize: '13px', color: '#047857' }}>
-                  O participante está habilitado a compor equipes multidisciplinares com outros resolvedores, desenvolvedores, designers e especialistas de domínio público da Prefeitura do Recife.
-                </div>
-              </div>
-            </div>
-
-            {/* ── Prêmios & Comissão Curadora ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-              <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#047857', margin: '0 0 8px 0' }}>
-                  🏆 Premiação Oficial do Hackathon
-                </h4>
-                <div style={{ backgroundColor: '#F8FAFC', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', color: '#334155' }}>
-                  <ul style={{ margin: 0, paddingLeft: '18px', lineHeight: 1.6 }}>
-                    {selectedSubmission.premios.map((p, idx) => (
-                      <li key={idx}><strong>{p}</strong></li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#047857', margin: '0 0 8px 0' }}>
-                  👥 Curadores & Gestores Públicos
-                </h4>
-                <div style={{ backgroundColor: '#F8FAFC', padding: '12px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '12px', color: '#475569' }}>
-                  <ul style={{ margin: 0, paddingLeft: '18px', lineHeight: 1.5 }}>
-                    {selectedSubmission.curadores.map((c, idx) => (
-                      <li key={idx}>{c}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Termos de Aceite & LGPD ── */}
-            <div style={{ backgroundColor: '#F8FAFC', borderRadius: '8px', padding: '14px', border: '1px solid #E2E8F0', display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-              <div style={{ fontSize: '13px', color: '#475569' }}>
-                📜 <strong>Regulamento Oficial:</strong> Declarado e Conforme às Diretrizes do Hacker Cidadão
-              </div>
-              <div style={{ fontSize: '13px', color: '#475569' }}>
-                🔒 <strong>Conformidade LGPD:</strong> {selectedSubmission.autorizaUsoDados ? '✅ Autorizado pelo Participante' : '⚠️ Não especificado'}
-              </div>
-            </div>
-
-            {/* Close Button Footer */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button
-                onClick={handleCloseModal}
-                style={{
-                  backgroundColor: '#10B981',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 28px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnifiedSubmissionModal
+          submission={mapHackerToSubmissionData(selectedSubmission)}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   )
 }
+
+function mapHackerToSubmissionData(sub: HackerSubmission): SubmissionData {
+  const evals: EvaluationItem[] = []
+
+  // Curadores e Comissão de Avaliação
+  sub.curadores.forEach((cur, idx) => {
+    evals.push({
+      id: `curador_${idx + 1}`,
+      phase: 'Comissão Curadora Oficial',
+      evaluatorName: cur,
+      comment: `Inscrição homologada para participação na maratona de dados públicos. Alocado para desenvolvimento de soluções para o ${sub.desafioInteresse}.`
+    })
+  })
+
+  // Categorias Hacker Cidadão
+  const hackerCategories: CategoryOption[] = [
+    { id: 'cat_uni', title: 'Estudante Universitário', subtitle: 'Categoria Acadêmica' },
+    { id: 'cat_prof', title: 'Profissional / Sociedade Civil', subtitle: 'Categoria Livre' },
+    { id: 'cat_gov', title: 'Servidor / Gestor Público', subtitle: 'Categoria GovTech' },
+    { id: 'cat_resolvedor', title: 'Resolvedor / Desenvolvedor', subtitle: 'Categoria Técnica' },
+    { id: 'cat_design', title: 'Designer / UX / UI', subtitle: 'Categoria Design' },
+    { id: 'cat_negocios', title: 'Negócios / Empreendedorismo', subtitle: 'Categoria Gestão' }
+  ]
+
+  return {
+    id: sub.id,
+    programName: sub.edicaoName || 'Hacker Cidadão 13.0',
+    title: sub.nome,
+    organization: sub.curso ? `Curso: ${sub.curso}` : 'Universidade / Instituição de Ensino',
+    responsibleName: sub.nome,
+    cpf: sub.cpf,
+    curso: sub.curso,
+    escolaridade: sub.isUniversitario ? 'Graduação / Superior Cursando' : 'Profissional / Sociedade Civil',
+    atuacaoProfissional: sub.atuacao || sub.areasDeAtuacao || sub.activeProfile,
+    city: sub.cidade || 'Recife',
+    state: sub.estado || 'PE',
+    moraEmRecife: sub.cidade?.toLowerCase() === 'recife' ? 'Sim' : 'Não',
+    email: sub.email || `${sub.id}@hackercidadao.recife.pe.gov.br`,
+    phone: '(81) 98800-0000',
+    socialLink: 'hackercidadao.recife.pe.gov.br',
+    foundedYear: '2024',
+    category: sub.category,
+    availableCategories: hackerCategories,
+    description: sub.descricao,
+    helpDescription: 'Explique de forma clara como sua formação, competências e proposta de solução colaboram para resolver os desafios cívicos da cidade do Recife.',
+    topicosConexao: [sub.desafioInteresse.split(':')[0], sub.activeProfile, sub.category, sub.curso].filter(Boolean) as string[],
+    termosAceitos: true,
+    autorizaLGPD: sub.autorizaUsoDados,
+    criteriaAnswers: [
+      {
+        title: 'Desafio Temático de Interesse',
+        helpText: 'Eixo prioritário de desafio público no qual o participante deseja atuar durante o hackathon.',
+        content: sub.desafioInteresse
+      },
+      {
+        title: 'Formação Acadêmica & Perfil de Atuação',
+        helpText: 'Curso de graduação/pós-graduação, instituição e áreas de especialidade técnica.',
+        content: `Curso: ${sub.curso}\nNível Acadêmico: ${sub.isUniversitario ? 'Estudante Universitário' : 'Profissional / Sociedade Civil'}\nPerfil CORETO: ${sub.activeProfile}\nCPF: ${sub.cpf}`
+      },
+      {
+        title: 'Premiação Almejada & Reconhecimento',
+        helpText: 'Categorias de premiação oficiais e aceleração oferecidas pela Prefeitura do Recife.',
+        content: sub.premios.join('\n')
+      },
+      {
+        title: 'Conformidade com Regulamento e LGPD',
+        helpText: 'Declaração formal de concordância com o regulamento e tratamento de dados cívicos.',
+        content: `Autorização de Uso de Dados: ${sub.autorizaUsoDados ? 'Concedida pelo participante conforme as diretrizes da LGPD.' : 'Pendente de validação'}`
+      }
+    ],
+    evaluations: evals,
+    slug: sub.slug,
+    rawBackendData: sub
+  }
+}
+
