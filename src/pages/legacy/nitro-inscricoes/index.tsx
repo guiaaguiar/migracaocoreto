@@ -770,14 +770,44 @@ export default function NitroInscricoesPage() {
 function mapNitroToSubmissionData(sub: NitroSubmission): SubmissionData {
   const evals: EvaluationItem[] = []
 
-  // Categorias Nitro
+  // Categorias / Editais NITRO vinculados ao registro do banco
   const nitroCategories: CategoryOption[] = [
-    { id: 'edital1', title: 'Edital 001 — Mapeamento de ICTs', subtitle: 'Capacidade Científica & NIT' },
-    { id: 'edital2', title: 'Edital 002 — ConectaLabs', subtitle: 'Inovação Aberta & Desafios' },
-    { id: 'edital3', title: 'Edital 003 — Portfólio Tecnológico & INPI', subtitle: 'Patentes & Transferência' },
-    { id: 'software', title: 'Software & Plataforma Cívica', subtitle: 'Ativo Tecnológico' },
-    { id: 'biotech', title: 'Biotecnologia & Saúde', subtitle: 'Ativo Tecnológico' },
-    { id: 'hardware', title: 'Hardware & IoT / Robótica', subtitle: 'Ativo Tecnológico' }
+    {
+      id: '001',
+      title: 'Edital 001 — Mapeamento de ICTs',
+      subtitle: 'Mapeamento de ICTs & NITs',
+      selected: sub.editalId === '001' || sub.category.includes('001') || sub.category.includes('ICT')
+    },
+    {
+      id: '002',
+      title: 'Edital 002 — Registro no INPI & Software',
+      subtitle: 'Registro de Software / INPI',
+      selected: sub.editalId === '002' || sub.category.includes('002') || sub.category.includes('INPI') || sub.category.includes('Software')
+    },
+    {
+      id: '003',
+      title: 'Edital 003 — ConectaLabs & Desafios',
+      subtitle: 'ConectaLabs / Desafios PCR',
+      selected: sub.editalId === '003' || sub.category.includes('003') || sub.category.includes('ConectaLabs')
+    },
+    {
+      id: 'software',
+      title: 'Software & Plataforma Cívica',
+      subtitle: 'Ativo Tecnológico',
+      selected: Boolean(sub.sw_nome && sub.sw_nome.length > 0 && sub.editalId === '002')
+    },
+    {
+      id: 'biotech',
+      title: 'Biotecnologia & Saúde',
+      subtitle: 'Ativo Tecnológico',
+      selected: Boolean(sub.descricao?.toLowerCase().includes('saúde') || sub.descricao?.toLowerCase().includes('bio') || sub.sw_nome?.toLowerCase().includes('saúde'))
+    },
+    {
+      id: 'hardware',
+      title: 'Hardware & IoT / Robótica',
+      subtitle: 'Ativo Tecnológico',
+      selected: Boolean(sub.descricao?.toLowerCase().includes('iot') || sub.descricao?.toLowerCase().includes('hardware') || sub.descricao?.toLowerCase().includes('robó'))
+    }
   ]
 
   return {
@@ -796,6 +826,7 @@ function mapNitroToSubmissionData(sub: NitroSubmission): SubmissionData {
     socialLink: sub.linkExterno || 'nitro.recife.pe.gov.br',
     foundedYear: '2023',
     category: sub.category || sub.editalName,
+    categorySectionTitle: 'Selecione uma categoria / edital de inscrição (conforme regulamento do NITRO)',
     availableCategories: nitroCategories,
     description: sub.descricao,
     helpDescription: 'Explique a tecnologia patenteada, modelo de negócio, maturidade TRL e aplicabilidade prática nos desafios de inovação.',

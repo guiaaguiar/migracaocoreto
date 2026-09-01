@@ -5,6 +5,7 @@ export interface CategoryOption {
   id: string
   title: string
   subtitle?: string
+  selected?: boolean
 }
 
 export interface EvaluationItem {
@@ -33,6 +34,7 @@ export interface SubmissionData {
   socialLink?: string
   foundedYear?: string | number
   category?: string
+  categorySectionTitle?: string
   availableCategories?: CategoryOption[]
   description?: string
   helpDescription?: string
@@ -330,20 +332,39 @@ export default function UnifiedSubmissionModal({ submission, onClose }: UnifiedS
 
   const selectedCat = (submission.category || '').toLowerCase().trim()
 
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, ' ')
+      .trim()
+
   const isSelectedCategory = (cat: CategoryOption) => {
+    // 1. Flag explícita do objeto
+    if (cat.selected === true) return true
     if (!selectedCat) return false
-    const catTitle = cat.title.toLowerCase().trim()
-    const catSub = (cat.subtitle || '').toLowerCase().trim()
-    return (
-      selectedCat.includes(catTitle) ||
-      catTitle.includes(selectedCat) ||
-      (catSub && selectedCat.includes(catSub)) ||
-      (selectedCat.includes('pesquisa') && catTitle.includes('pesquisa')) ||
-      (selectedCat.includes('ascen') && catTitle.includes('ascen')) ||
-      (selectedCat.includes('tração') && catTitle.includes('tração')) ||
-      (selectedCat.includes('cidade') && catTitle.includes('cidade')) ||
-      (selectedCat.includes('esg') && catTitle.includes('esg'))
-    )
+
+    const normSelected = normalize(selectedCat)
+    const normId = normalize(cat.id)
+    const normTitle = normalize(cat.title)
+    const normSub = normalize(cat.subtitle || '')
+
+    // 2. Comparações exatas ou de inclusão direta
+    if (normId === normSelected) return true
+    if (normTitle === normSelected) return true
+    if (normSelected.includes(normTitle) || normTitle.includes(normSelected)) return true
+    if (normSub && (normSelected.includes(normSub) || normSub.includes(normSelected))) return true
+
+    // 3. Casos semânticos e siglas dos 6 programas
+    const tokens = normSelected.split(/\s+/).filter(t => t.length > 3)
+    for (const t of tokens) {
+      if (normTitle.includes(t) || normId.includes(t) || normSub.includes(t)) {
+        return true
+      }
+    }
+
+    return false
   }
 
   // Decodifica nomes de arquivos URL-encoded
@@ -734,7 +755,7 @@ export default function UnifiedSubmissionModal({ submission, onClose }: UnifiedS
                 {/* Grade de Seleção de Categorias */}
                 <div style={{ marginTop: '12px' }}>
                   <label style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '12px' }}>
-                    Selecione uma categoria de inscrição (conforme regulamento do prêmio)
+                    {submission.categorySectionTitle || 'Selecione uma categoria de inscrição (conforme regulamento do programa)'}
                   </label>
 
                   <div

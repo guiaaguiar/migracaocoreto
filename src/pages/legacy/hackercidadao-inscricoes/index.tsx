@@ -869,14 +869,45 @@ function mapHackerToSubmissionData(sub: HackerSubmission): SubmissionData {
     })
   })
 
-  // Categorias Hacker Cidadão
+  // Categorias / Modalidades de Inscrição Hacker Cidadão
+  const isUni = sub.isUniversitario || sub.category?.toLowerCase().includes('universit')
   const hackerCategories: CategoryOption[] = [
-    { id: 'cat_uni', title: 'Estudante Universitário', subtitle: 'Categoria Acadêmica' },
-    { id: 'cat_prof', title: 'Profissional / Sociedade Civil', subtitle: 'Categoria Livre' },
-    { id: 'cat_gov', title: 'Servidor / Gestor Público', subtitle: 'Categoria GovTech' },
-    { id: 'cat_resolvedor', title: 'Resolvedor / Desenvolvedor', subtitle: 'Categoria Técnica' },
-    { id: 'cat_design', title: 'Designer / UX / UI', subtitle: 'Categoria Design' },
-    { id: 'cat_negocios', title: 'Negócios / Empreendedorismo', subtitle: 'Categoria Gestão' }
+    {
+      id: 'cat_uni',
+      title: 'Estudante Universitário',
+      subtitle: 'Categoria Acadêmica',
+      selected: isUni
+    },
+    {
+      id: 'cat_prof',
+      title: 'Profissional / Sociedade Civil',
+      subtitle: 'Categoria Livre & Comunidade',
+      selected: !isUni
+    },
+    {
+      id: 'cat_gov',
+      title: 'Servidor / Gestor Público',
+      subtitle: 'Categoria GovTech',
+      selected: sub.activeProfile?.toLowerCase().includes('gov') || sub.atuacao?.toLowerCase().includes('público') || sub.atuacao?.toLowerCase().includes('publico')
+    },
+    {
+      id: 'cat_resolvedor',
+      title: 'Resolvedor / Desenvolvedor',
+      subtitle: 'Categoria Técnica & TI',
+      selected: sub.activeProfile?.toLowerCase().includes('resolvedor') || sub.curso?.toLowerCase().includes('computação') || sub.curso?.toLowerCase().includes('software') || sub.curso?.toLowerCase().includes('sistemas')
+    },
+    {
+      id: 'cat_design',
+      title: 'Designer / UX / UI',
+      subtitle: 'Categoria Design & Experiência',
+      selected: sub.curso?.toLowerCase().includes('design') || sub.atuacao?.toLowerCase().includes('ux') || sub.atuacao?.toLowerCase().includes('design')
+    },
+    {
+      id: 'cat_negocios',
+      title: 'Negócios / Empreendedorismo',
+      subtitle: 'Categoria Gestão & Pitch',
+      selected: sub.curso?.toLowerCase().includes('administração') || sub.curso?.toLowerCase().includes('gestão') || sub.curso?.toLowerCase().includes('negócios')
+    }
   ]
 
   return {
@@ -897,6 +928,7 @@ function mapHackerToSubmissionData(sub: HackerSubmission): SubmissionData {
     socialLink: 'hackercidadao.recife.pe.gov.br',
     foundedYear: '2024',
     category: sub.category,
+    categorySectionTitle: 'Selecione uma categoria / modalidade de inscrição (conforme regulamento do Hacker Cidadão)',
     availableCategories: hackerCategories,
     description: sub.descricao,
     helpDescription: 'Explique de forma clara como sua formação, competências e proposta de solução colaboram para resolver os desafios cívicos da cidade do Recife.',

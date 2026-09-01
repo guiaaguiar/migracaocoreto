@@ -864,16 +864,57 @@ function mapCaminhosToSubmissionData(sub: CaminhosSubmission): SubmissionData {
     })
   })
 
-  // Categorias Caminhos
+  // Categorias / Áreas Temáticas Caminhos vinculadas ao registro do banco
+  const catLower = (sub.categoria || '').toLowerCase()
   const caminhosCategories: CategoryOption[] = [
-    { id: 'biotech', title: 'Biotecnologia & Genômica', subtitle: 'Vertical Temática' },
-    { id: 'ti', title: 'TI, Software & Inteligência Artificial', subtitle: 'Vertical Temática' },
-    { id: 'eletro', title: 'Eletroeletrônica & Telecom', subtitle: 'Vertical Temática' },
-    { id: 'mecanica', title: 'Mecânica & Automação / Robótica', subtitle: 'Vertical Temática' },
-    { id: 'quimica', title: 'Química & Novos Materiais', subtitle: 'Vertical Temática' },
-    { id: 'saude', title: 'Saúde & Dispositivos Médicos', subtitle: 'Vertical Temática' },
-    { id: 'govtech', title: 'GovTech & Serviços Públicos', subtitle: 'Vertical Temática' },
-    { id: 'cidades', title: 'Cidades Sustentáveis & Mobilidade', subtitle: 'Vertical Temática' }
+    {
+      id: 'ti',
+      title: 'TI, Software & Inteligência Artificial',
+      subtitle: 'Tecnologia da Informação & Construtech',
+      selected: catLower.includes('ti') || catLower.includes('tecnologia da informação') || catLower.includes('software') || catLower.includes('construtech') || catLower.includes('digital')
+    },
+    {
+      id: 'cidades',
+      title: 'Mobilidade Urbana & Smart Cities',
+      subtitle: 'Cidades Sustentáveis & Mobilidade',
+      selected: catLower.includes('mobilidade') || catLower.includes('cidade') || catLower.includes('smart') || catLower.includes('tráfego')
+    },
+    {
+      id: 'biotech',
+      title: 'Biotecnologia & Genômica',
+      subtitle: 'Ciências da Vida & Bioeconomia',
+      selected: catLower.includes('bio') || catLower.includes('genôm') || catLower.includes('genom')
+    },
+    {
+      id: 'saude',
+      title: 'Saúde & Dispositivos Médicos',
+      subtitle: 'Tecnologia em Saúde & Farmacêutica',
+      selected: catLower.includes('saúde') || catLower.includes('saude') || catLower.includes('médic') || catLower.includes('medic') || catLower.includes('dispositivo')
+    },
+    {
+      id: 'quimica',
+      title: 'Química & Novos Materiais',
+      subtitle: 'Nanotecnologia & Polímeros',
+      selected: catLower.includes('química') || catLower.includes('quimica') || catLower.includes('material') || catLower.includes('nano')
+    },
+    {
+      id: 'eletro',
+      title: 'Eletroeletrônica & Telecomunicações',
+      subtitle: 'Hardware, Sensores & Conectividade',
+      selected: catLower.includes('eletro') || catLower.includes('telecom') || catLower.includes('sensor')
+    },
+    {
+      id: 'mecanica',
+      title: 'Mecânica, Automação & Robótica',
+      subtitle: 'Sistemas Mecatrônicos & Indústria',
+      selected: catLower.includes('mecânica') || catLower.includes('mecanica') || catLower.includes('automação') || catLower.includes('automacao') || catLower.includes('robót') || catLower.includes('robot')
+    },
+    {
+      id: 'agro',
+      title: 'Agronegócio & Alimentos',
+      subtitle: 'Agtech & Segurança Alimentar',
+      selected: catLower.includes('agro') || catLower.includes('alimento') || catLower.includes('agtech')
+    }
   ]
 
   return {
@@ -890,6 +931,7 @@ function mapCaminhosToSubmissionData(sub: CaminhosSubmission): SubmissionData {
     socialLink: sub.linkExterno || 'caminhosdainovacao.org.br',
     foundedYear: '2024',
     category: sub.categoria,
+    categorySectionTitle: 'Selecione uma categoria / área tecnológica de inscrição (conforme regulamento do programa)',
     availableCategories: caminhosCategories,
     description: sub.resumo,
     helpDescription: 'Apresente o resumo da proposta inovadora, problema enfrentado pelo mercado ou sociedade, metodologia de pesquisa/desenvolvimento e valor do fomento solicitado.',

@@ -644,16 +644,57 @@ function mapEitaToSubmissionData(sub: EitaSubmission): SubmissionData {
     }
   })
 
-  // Categorias EITA
+  // Categorias / Eixos de Desafios EITA vinculados ao registro do banco
+  const desLower = (sub.desafioCategory || sub.desafio || '').toLowerCase()
   const eitaCategories: CategoryOption[] = [
-    { id: 'residuos', title: 'Resíduos Sólidos & Limpeza Urbana', subtitle: 'Desafio EITA' },
-    { id: 'defesa_civil', title: 'Defesa Civil & Monitoramento Climático', subtitle: 'Desafio EITA' },
-    { id: 'mobilidade', title: 'Mobilidade Urbana & Gestão de Tráfego', subtitle: 'Desafio EITA' },
-    { id: 'saude', title: 'Saúde Pública & Gestão de Consultas', subtitle: 'Desafio EITA' },
-    { id: 'educacao', title: 'Educação & Tecnologia em Sala de Aula', subtitle: 'Desafio EITA' },
-    { id: 'energia', title: 'Eficiência Energética & Iluminação', subtitle: 'Desafio EITA' },
-    { id: 'empreendedorismo', title: 'Empreendedorismo & Negócios Locais', subtitle: 'Desafio EITA' },
-    { id: 'cultura', title: 'Cultura, Turismo & Economia Criativa', subtitle: 'Desafio EITA' }
+    {
+      id: 'residuos',
+      title: 'Resíduos Sólidos & Limpeza Urbana',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('resíduo') || desLower.includes('residuo') || desLower.includes('limpeza') || desLower.includes('lixo')
+    },
+    {
+      id: 'defesa_civil',
+      title: 'Defesa Civil & Monitoramento Climático',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('defesa') || desLower.includes('clima') || desLower.includes('alagamento') || desLower.includes('morro')
+    },
+    {
+      id: 'mobilidade',
+      title: 'Mobilidade Urbana & Gestão de Tráfego',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('mobilidade') || desLower.includes('tráfego') || desLower.includes('transporte') || desLower.includes('sinal')
+    },
+    {
+      id: 'saude',
+      title: 'Saúde Pública & Gestão de Consultas',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('saúde') || desLower.includes('saude') || desLower.includes('consulta') || desLower.includes('medic')
+    },
+    {
+      id: 'educacao',
+      title: 'Educação & Tecnologia em Sala de Aula',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('educação') || desLower.includes('educacao') || desLower.includes('escola') || desLower.includes('aluno')
+    },
+    {
+      id: 'energia',
+      title: 'Eficiência Energética & Iluminação',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('energia') || desLower.includes('iluminação') || desLower.includes('eletric')
+    },
+    {
+      id: 'empreendedorismo',
+      title: 'Empreendedorismo & Negócios Locais',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('empreendedorismo') || desLower.includes('negócio') || desLower.includes('empresa') || desLower.includes('desenvolvimento')
+    },
+    {
+      id: 'cultura',
+      title: 'Cultura, Turismo & Economia Criativa',
+      subtitle: 'Desafio EITA',
+      selected: desLower.includes('cultura') || desLower.includes('turismo') || desLower.includes('criativ')
+    }
   ]
 
   return {
@@ -670,7 +711,8 @@ function mapEitaToSubmissionData(sub: EitaSubmission): SubmissionData {
     phone: '(81) 98800-0000',
     socialLink: 'eita.recife.pe.gov.br',
     foundedYear: '2023',
-    category: sub.desafioCategory,
+    category: sub.desafioCategory || sub.desafio,
+    categorySectionTitle: 'Selecione uma categoria / eixo do desafio público (conforme regulamento do E.I.T.A!)',
     availableCategories: eitaCategories,
     description: sub.comoResolve,
     helpDescription: `Explique de forma clara como sua solução endereça diretamente o desafio público selecionado: "${sub.desafio}". Aponte a dor central, os objetivos da proposta e o impacto esperado.`,

@@ -872,16 +872,63 @@ export function mapSwcToSubmissionData(sub: StartupWorldCupSubmission): Submissi
     })
   })
 
-  // Categorias SWC
+  // Categorias / Verticais Setoriais SWC vinculadas ao segmento da startup
+  const segLower = (sub.segmento || '').toLowerCase()
   const swcCategories: CategoryOption[] = [
-    { id: 'fintech', title: 'Fintech & Serviços Financeiros', subtitle: 'Vertical Setorial' },
-    { id: 'healthtech', title: 'Healthtech & Biotecnologia', subtitle: 'Vertical Setorial' },
-    { id: 'edtech', title: 'Edtech & Educação', subtitle: 'Vertical Setorial' },
-    { id: 'govtech', title: 'Govtech & Smart Cities', subtitle: 'Vertical Setorial' },
-    { id: 'retailtech', title: 'Retailtech & E-commerce', subtitle: 'Vertical Setorial' },
-    { id: 'deeptech', title: 'Deeptech & Inteligência Artificial', subtitle: 'Vertical Setorial' },
-    { id: 'agtech', title: 'Agtech & Sustentabilidade', subtitle: 'Vertical Setorial' },
-    { id: 'climatech', title: 'Climatech & Energia Limpa', subtitle: 'Vertical Setorial' }
+    {
+      id: 'govtech',
+      title: 'GovTech & Smart Cities',
+      subtitle: 'GovTech & Dados Abertos',
+      selected: segLower.includes('gov') || segLower.includes('dado') || segLower.includes('cidade')
+    },
+    {
+      id: 'fintech',
+      title: 'Fintech & Serviços Financeiros',
+      subtitle: 'Meios de Pagamento & Banking',
+      selected: segLower.includes('fintech') || segLower.includes('pagamento') || segLower.includes('finance')
+    },
+    {
+      id: 'healthtech',
+      title: 'Healthtech & Biotecnologia',
+      subtitle: 'Saúde & Bem-Estar',
+      selected: segLower.includes('health') || segLower.includes('saúde') || segLower.includes('saude') || segLower.includes('bio')
+    },
+    {
+      id: 'edtech',
+      title: 'Edtech & Educação',
+      subtitle: 'Capacitação & Aprendizagem',
+      selected: segLower.includes('edtech') || segLower.includes('educa')
+    },
+    {
+      id: 'retailtech',
+      title: 'Retailtech & E-commerce',
+      subtitle: 'Consumo, Varejo & Marketplaces',
+      selected: segLower.includes('retail') || segLower.includes('commerce') || segLower.includes('consumo') || segLower.includes('varejo')
+    },
+    {
+      id: 'deeptech',
+      title: 'Deeptech & Inteligência Artificial',
+      subtitle: 'IA, Algoritmos & Hardware Avançado',
+      selected: segLower.includes('deep') || segLower.includes('ia') || segLower.includes('intelig')
+    },
+    {
+      id: 'agtech',
+      title: 'Agtech & Sustentabilidade',
+      subtitle: 'Agronegócio & Cadeias Produtivas',
+      selected: segLower.includes('agtech') || segLower.includes('agro')
+    },
+    {
+      id: 'climatech',
+      title: 'Climatech & Energia Limpa',
+      subtitle: 'Descarbonização & Clima',
+      selected: segLower.includes('clima') || segLower.includes('energia') || segLower.includes('sustent')
+    },
+    {
+      id: 'logtech',
+      title: 'Mobilidade Urbana & Logística',
+      subtitle: 'Transporte & Supply Chain',
+      selected: segLower.includes('mobil') || segLower.includes('log') || segLower.includes('transport')
+    }
   ]
 
   return {
@@ -902,6 +949,7 @@ export function mapSwcToSubmissionData(sub: StartupWorldCupSubmission): Submissi
     socialLink: sub.website || 'startupworldcup.io',
     foundedYear: '2022',
     category: sub.segmento,
+    categorySectionTitle: 'Selecione uma categoria / vertical de inscrição (conforme regulamento do Startup World Cup)',
     availableCategories: swcCategories,
     description: sub.descricao,
     helpDescription: 'Apresente a proposta de valor da startup, modelo de monetização, mercado endereçável (TAM/SAM/SOM), tração de receita e tese para o pitch no Vale do Silício.',
