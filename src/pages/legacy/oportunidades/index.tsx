@@ -192,54 +192,37 @@ const MOCK_OPORTUNIDADES: Oportunidade[] = [
     ],
     status: 'Inscrições Abertas',
   },
+  {
+    id: '8',
+    titulo: 'Mobilidade Inteligente & Trânsito Seguro',
+    organizacao: 'SECTI Recife / CTTU',
+    logoText: 'SECTI',
+    logoBg: '#10B981',
+    dataLimite: '15/11/2026',
+    valor: 'R$ 1.200.000',
+    areas: ['Cidades, mobilidade e urbanismo', 'Inteligência Artificial', 'Visão Computacional'],
+    apoio: ['Contratação Sandbox', 'Mentoria Técnica', 'Dados Abertos'],
+    descricao:
+      'Captação de soluções de visão computacional e algoritmos de otimização semafórica para redução de gargalos de tráfego e proteção aos pedestres e ciclistas.',
+    requisitos: [
+      'TRL 6+',
+      'Capacidade de integração com câmeras públicas da CTTU',
+      'Conformidade com a LGPD',
+    ],
+    beneficios: [
+      'Teste em ambiente real com dados ao vivo da cidade',
+      'Aporte financeiro para piloto de 6 meses',
+      'Possibilidade de contrato de fornecimento permanente',
+    ],
+    status: 'Inscrições Abertas',
+  },
 ]
 
-import { useEffect } from 'react'
-import { oportunidadesService, type OportunidadeItem } from '../../../services/oportunidadesService'
-
 export default function OportunidadesPage() {
-  const [oportunidadesList, setOportunidadesList] = useState<Oportunidade[]>(MOCK_OPORTUNIDADES)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLiveFromDb, setIsLiveFromDb] = useState(false)
+  const [oportunidadesList] = useState<Oportunidade[]>(MOCK_OPORTUNIDADES)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedOportunidade, setSelectedOportunidade] = useState<Oportunidade | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
-
-  useEffect(() => {
-    let isMounted = true
-    setIsLoading(true)
-    oportunidadesService.getAll()
-      .then((data: OportunidadeItem[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        const mapped: Oportunidade[] = data.map(item => ({
-          id: item.id,
-          titulo: item.titulo,
-          organizacao: item.organizacao,
-          logoText: item.logoText || 'Coreto',
-          logoBg: item.logoBg || '#003B6D',
-          dataLimite: item.dataLimite,
-          valor: item.valor || 'A definir',
-          areas: item.areas || [],
-          apoio: item.apoio || [],
-          descricao: item.descricao || '',
-          requisitos: item.requisitos || [],
-          beneficios: item.beneficios || [],
-          status: item.status || 'Inscrições Abertas',
-        }))
-        setOportunidadesList(mapped)
-        setIsLiveFromDb(true)
-      })
-      .catch(() => {
-        // Fallback gracioso
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false)
-      })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
 
   const filteredOportunidades = useMemo(() => {
     const query = searchTerm.toLowerCase().trim()

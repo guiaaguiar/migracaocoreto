@@ -293,55 +293,14 @@ const HISTORICAL_DATA = {
 // Component: MapaEcossistemaPage
 // ─────────────────────────────────────────────────────────
 
-import { useEffect } from 'react'
-import { ecossistemaService, type EcosystemActorItem } from '../../../services/ecossistemaService'
-
 export default function MapaEcossistemaPage() {
-  const [actorsList, setActorsList] = useState<EcosystemActor[]>(ACTORS)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLiveFromDb, setIsLiveFromDb] = useState(false)
+  const [actorsList] = useState<EcosystemActor[]>(ACTORS)
   const [activeTab, setActiveTab] = useState<'mapa' | 'categorias' | 'dados' | 'importar-startups' | 'importar-orgs'>('mapa')
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedActor, setSelectedActor] = useState<EcosystemActor | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [showConnections, setShowConnections] = useState(true)
-
-  useEffect(() => {
-    let isMounted = true
-    setIsLoading(true)
-    ecossistemaService.getActors()
-      .then((data: EcosystemActorItem[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        const mapped: EcosystemActor[] = data.map(item => ({
-          id: item.id,
-          name: item.name,
-          categoryId: item.categoryId,
-          categoryName: item.categoryName,
-          trl: item.trl,
-          neighborhood: item.neighborhood,
-          x: Number(item.x),
-          y: Number(item.y),
-          description: item.description || '',
-          website: item.website || '',
-          email: item.email || '',
-          connections: item.connections || [],
-          color: item.color || '#00a8b5',
-        }))
-        setActorsList(mapped)
-        setIsLiveFromDb(true)
-      })
-      .catch(() => {
-        // Fallback gracioso
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false)
-      })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
 
   // CSV Import States
   const [startupCsvName, setStartupCsvName] = useState<string | null>(null)

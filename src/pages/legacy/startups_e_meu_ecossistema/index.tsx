@@ -221,6 +221,23 @@ const MOCK_STARTUPS: Startup[] = [
     responsavel: 'Arthur Silva',
     cidade: 'Recife, PE',
   },
+  {
+    id: '14',
+    nome: 'Recife Circular Resíduos',
+    categoria: 'CleanTech & Energia',
+    logoText: 'RCR',
+    logoBg: '#059669',
+    logoType: 'text',
+    trl: 'TRL 6 - Prototipagem em ambiente relevante',
+    tipoBadge: 'Startup',
+    tags: ['CleanTech', 'Sustentabilidade', 'Economia Circular', 'Smart City'],
+    descricao:
+      'Rastreabilidade de resíduos sólidos urbanos com incentivos gamificados para catadores e cooperativas.',
+    site: 'https://recifecircular.com.br',
+    email: 'contato@recifecircular.com.br',
+    responsavel: 'Thiago Siqueira',
+    cidade: 'Recife, PE',
+  },
 ]
 
 const CATEGORIAS_OPTIONS = [
@@ -238,53 +255,11 @@ const CATEGORIAS_OPTIONS = [
   'Plataforma de Inovação',
 ]
 
-import { useEffect } from 'react'
-import { startupsService, type StartupItem } from '../../../services/startupsService'
-
 export default function StartupsEMeuEcossistemaPage() {
-  const [startupsList, setStartupsList] = useState<Startup[]>(MOCK_STARTUPS)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLiveFromDb, setIsLiveFromDb] = useState(false)
+  const [startupsList] = useState<Startup[]>(MOCK_STARTUPS)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Todas as Categorias')
   const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null)
-
-  useEffect(() => {
-    let isMounted = true
-    setIsLoading(true)
-    startupsService.getAll()
-      .then((data: StartupItem[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        const mapped: Startup[] = data.map(item => ({
-          id: item.id,
-          nome: item.name,
-          categoria: item.category,
-          logoText: item.logoText,
-          logoBg: item.logoBg,
-          logoType: item.logoType || 'coreto',
-          trl: item.trl,
-          tipoBadge: item.tipoBadge || 'Startup',
-          tags: item.tags || [],
-          descricao: item.descricao || '',
-          site: item.site,
-          email: item.email,
-          responsavel: item.responsavel,
-          cidade: item.cidade,
-        }))
-        setStartupsList(mapped)
-        setIsLiveFromDb(true)
-      })
-      .catch(() => {
-        // Fallback para MOCK_STARTUPS se o backend ainda estiver iniciando
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false)
-      })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
 
   const filteredStartups = useMemo(() => {
     return startupsList.filter(item => {

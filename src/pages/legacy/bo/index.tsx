@@ -28,11 +28,13 @@ interface UserItem {
 }
 
 const INITIAL_ORGANIZATIONS: Organization[] = [
-  { id: 'org-1', name: 'Emprel', tags: ['eita', 'destaque'] },
-  { id: 'org-2', name: 'Polotec', tags: ['NIT', 'Parceira', 'eita', 'destaque'] },
-  { id: 'org-3', name: 'Teste LTDA', tags: ['NIT', 'IoT'] },
-  { id: 'org-4', name: 'SECTI', tags: ['eita', 'organizador-hacker'] },
-  { id: 'org-5', name: 'asdasdsada', tags: ['NIT', 'eita'] },
+  { id: 'org-1', name: 'Emprel', tags: ['eita', 'destaque', 'govtech'] },
+  { id: 'org-2', name: 'Polotec / UFPE', tags: ['NIT', 'Parceira', 'eita', 'destaque'] },
+  { id: 'org-3', name: 'Porto Digital', tags: ['hub', 'destaque', 'parque-tech'] },
+  { id: 'org-4', name: 'SECTI Recife', tags: ['eita', 'organizador-hacker', 'govtech'] },
+  { id: 'org-5', name: 'Grite Soluções & Inovação', tags: ['NIT', 'Parceira', 'Aceleração'] },
+  { id: 'org-6', name: 'Teste LTDA', tags: ['NIT', 'IoT'] },
+  { id: 'org-7', name: 'asdasdsada', tags: ['NIT', 'eita'] },
 ]
 
 const INITIAL_INITIATIVES: Initiative[] = [
@@ -69,9 +71,11 @@ const INITIAL_INITIATIVES: Initiative[] = [
 const INITIAL_USERS: UserItem[] = [
   {
     id: 'user-1',
-    name: 'Casé Pedro',
+    name: 'Pedro Casé',
     email: 'pedro.case@recife.pe.gov.br',
-    status: 'incompleto',
+    status: 'completo',
+    date: '15/01/2025 09:30',
+    tags: ['eita', 'gestor', 'Inovação Aberta', 'GovTech'],
   },
   {
     id: 'user-2',
@@ -85,11 +89,11 @@ const INITIAL_USERS: UserItem[] = [
     email: 'ceci@design.com.br',
     status: 'completo',
     date: '11/08/2025 10:52',
-    tags: ['AdTech'],
+    tags: ['AdTech', 'UI/UX', 'Product Design'],
   },
   {
     id: 'user-4',
-    name: 'Gabre',
+    name: 'Gabriel Chamie',
     email: 'gabrielchamie@gritesolucoes.com.br',
     status: 'completo',
     date: '08/08/2025 08:18',
@@ -97,16 +101,37 @@ const INITIAL_USERS: UserItem[] = [
   },
   {
     id: 'user-5',
-    name: 'Gabriel Chamie',
-    email: 'gabrielchamie@gmail.com',
+    name: 'Dra. Camilla Ribeiro',
+    email: 'camilla.ribeiro@saudeauditiva.med.br',
     status: 'completo',
-    date: '03/10/2025 13:50',
-    tags: ['Educação', 'Tecnologia da Informação', 'Inovação aberta'],
+    date: '20/09/2025 14:10',
+    tags: ['HealthTech', 'MedTech', 'Telemedicina'],
+  },
+  {
+    id: 'user-6',
+    name: 'Prof. Dr. Marcelo Soares',
+    email: 'marcelo.soares@ufpe.br',
+    status: 'completo',
+    date: '01/10/2025 16:00',
+    tags: ['NIT', 'Avaliador', 'Inteligência Artificial'],
+  },
+  {
+    id: 'user-7',
+    name: 'Lucas Gabriel',
+    email: 'lucas.gabriel@mvpei.com.br',
+    status: 'completo',
+    date: '12/10/2025 11:20',
+    tags: ['Aceleração', 'Ideação', 'MVP'],
+  },
+  {
+    id: 'user-8',
+    name: 'Fernanda Lima',
+    email: 'fernanda.lima@beg.recife.pe.br',
+    status: 'completo',
+    date: '18/10/2025 17:45',
+    tags: ['EdTech', 'Desenvolvimento', 'Recrutamento'],
   },
 ]
-
-import { useEffect } from 'react'
-import { boService, type BoOrganization, type BoInitiative, type BoUser } from '../../../services/boService'
 
 export default function LegacyBoPage() {
   // State for Lists & Searching
@@ -118,55 +143,6 @@ export default function LegacyBoPage() {
 
   const [users, setUsers] = useState<UserItem[]>(INITIAL_USERS)
   const [searchUser, setSearchUser] = useState<string>('')
-
-  useEffect(() => {
-    let isMounted = true
-
-    // Carregar iniciativas reais
-    boService.getInitiatives()
-      .then((data: BoInitiative[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        setInitiatives(data.map(i => ({
-          id: i.id,
-          status: i.status,
-          title: i.title,
-          date: i.date || 'Recente',
-          link: i.link || '#',
-        })))
-      })
-      .catch(() => {})
-
-    // Carregar usuários reais
-    boService.getUsers()
-      .then((data: BoUser[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        setUsers(data.map(u => ({
-          id: u.id,
-          name: u.name,
-          email: u.email,
-          status: u.status,
-          date: u.date,
-          tags: u.tags || [],
-        })))
-      })
-      .catch(() => {})
-
-    // Carregar organizações reais
-    boService.getOrganizations()
-      .then((data: BoOrganization[]) => {
-        if (!isMounted || !data || data.length === 0) return
-        setOrganizations(data.map(o => ({
-          id: o.id,
-          name: o.name,
-          tags: o.tags || [],
-        })))
-      })
-      .catch(() => {})
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
 
   // Modals state
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false)
