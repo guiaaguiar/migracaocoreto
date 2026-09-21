@@ -39,6 +39,7 @@ import PremioInovacaoRecPage from './pages/legacy/premio-inovacao-rec'
 import PremioRecSubmissoesPage from './pages/legacy/premiorec-submissoes'
 import PremioRecAvaliacoesFase1Page from './pages/legacy/premiorec-avaliacoes-fase1'
 import PremioRecAvaliacoesFase2Page from './pages/legacy/premiorec-avaliacoes-fase2'
+import FormsPremioRec2026Page from './pages/legacy/formspremiorec2026'
 import QuizzDescubraSeuLugarPage from './pages/legacy/quizz-descubra_seu_lugar'
 import StartupWorldCupPage from './pages/legacy/startupworldcup'
 import StartupWorldCupInscricoesPage from './pages/legacy/startupworldcup-inscricoes'
@@ -128,6 +129,7 @@ function App() {
         <Route path="/legacy/premiorec-fase1" element={<PremioRecAvaliacoesFase1Page />} />
         <Route path="/legacy/premiorec-avaliacoes-fase2" element={<PremioRecAvaliacoesFase2Page />} />
         <Route path="/legacy/premiorec-fase2" element={<PremioRecAvaliacoesFase2Page />} />
+        <Route path="/legacy/formspremiorec2026" element={<FormsPremioRec2026Page />} />
         <Route path="/legacy/quizz-descubra_seu_lugar" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/quizz-descubra_seu_lugar/:slug" element={<QuizzDescubraSeuLugarPage />} />
         <Route path="/legacy/startupworldcup" element={<StartupWorldCupPage />} />
